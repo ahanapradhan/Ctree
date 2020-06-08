@@ -57,27 +57,7 @@ public class CtreeBuilder {
 		return tree;
 	}
 
-	public static String getPackets(String ecws) {
-		String[] items = ecws.split(" ");
-		List<Object> list = buildPackets(items);
-		StringBuilder sb = new StringBuilder();
-		for (Object l : list) {
-			if (l instanceof CNode) {
-				CNode node = (CNode) l;
-				// System.out.println(node.getLabel());
-				sb.append(node.getLabel());
-			} else if (l instanceof String) {
-				// System.out.println((String) l);
-				sb.append(" " + l + " ");
-			} else {
-				sb.append("-");
-				// System.out.println("invalid entry in packet");
-			}
-		}
-		return sb.toString();
-	}
-
-	static List<Object> buildPackets(String[] items) {
+	public static List<Object> buildPackets(String[] items) {
 		List<Object> list = new ArrayList<Object>();
 
 		CNode node = null;

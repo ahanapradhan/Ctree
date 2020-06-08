@@ -50,14 +50,6 @@ public class Ctree {
 		return getNodebyId(n.getParent());
 	}
 
-	public void printCtree() {
-		System.out.println("root: " + root.getId());
-		for (AbstractTreeNode n : nodes) {
-			System.out.println(n.getId() + " : " + n.getLabel() + " parent id: " + n.getParent() + " children: "
-					+ n.getChildrenIds());
-		}
-	}
-
 	public int howManyNodes() {
 		return nodes.size();
 	}
@@ -67,7 +59,10 @@ public class Ctree {
 		sb.append("digraph G {\n");
 		for (AbstractTreeNode n : nodes) {
 			if (n.getParent() != -1) {
-				sb.append("    " + getNodebyId(n.getParent()).getLabel() + " -> " + n.getLabel() + ";\n");
+				sb.append("    \"" + getNodebyId(n.getParent()).getVisLabel() + "\" -> \"" + n.getVisLabel() + "\";\n");
+			}
+			if (n instanceof ANode) {
+				sb.append("    \"" + n.getVisLabel() + "\" [shape=box,style=filled,color=\".7 .3 1.0\"];\n");
 			}
 		}
 		sb.append("}\n");

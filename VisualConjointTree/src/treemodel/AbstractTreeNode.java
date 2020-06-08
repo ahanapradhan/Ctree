@@ -52,4 +52,6 @@ public abstract class AbstractTreeNode {
 	
 	public abstract String getLabel();
 
+	public abstract String getVisLabel();
+
 }

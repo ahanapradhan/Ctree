@@ -42,4 +42,15 @@ public class CNode extends AbstractTreeNode {
 		return label;
 	}
 
+	public String getVisLabel() {
+		String prefix = "";
+		StringBuilder builder = new StringBuilder();
+		for (String s : places) {
+			builder.append(prefix);
+			prefix = ",";
+			builder.append(s);
+		}
+		return builder.toString();
+	}
+
 }
