@@ -14,7 +14,6 @@ import xml2ecws.pnmlParser;
 public class pnmlParserTest {
 	static String dotFile = "digraph.dot";
 	static String outputFile = "petrinet.png";
-    static String workDirectory = "/Users/ahanapradhan/eclipse-workspace/VisualConjointTree/src/xml2ecws/";
     
 	@BeforeEach
 	void setUp() throws Exception {
@@ -29,7 +28,7 @@ public class pnmlParserTest {
 	
 	@Test
 	public void test_andnet1_readNNet() {
-		Net m = pnmlParser.readFile(workDirectory+"sample-nets/andnet1.xml");
+		Net m = pnmlParser.readFile(TestUtil.INPUT_NETS_DIR+"andnet1.xml");
 		String nettext = m.printNetForDot();
 		File f = new File(dotFile);
 		TestUtil.createSampleDotFile(f, nettext);
@@ -45,7 +44,7 @@ public class pnmlParserTest {
 	
 	@Test
 	public void test_andnet2_readNNet() {
-		Net m = pnmlParser.readFile(workDirectory+"sample-nets/net1.pnml");
+		Net m = pnmlParser.readFile(TestUtil.INPUT_NETS_DIR+"net1.pnml");
 		String nettext = m.printNetForDot();
 		File f = new File(dotFile);
 		TestUtil.createSampleDotFile(f, nettext);
@@ -61,7 +60,7 @@ public class pnmlParserTest {
 	
 	@Test
 	public void test_andnet3_readNNet() {
-		Net m = pnmlParser.readFile(workDirectory+"sample-nets/net2.xml");
+		Net m = pnmlParser.readFile(TestUtil.INPUT_NETS_DIR+"net2.xml");
 		String nettext = m.printNetForDot();
 		File f = new File(dotFile);
 		TestUtil.createSampleDotFile(f, nettext);

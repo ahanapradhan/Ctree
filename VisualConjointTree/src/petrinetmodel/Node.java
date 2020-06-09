@@ -17,10 +17,10 @@ public abstract class Node {
 	
 	protected int unvisitedInArcs;
 	
-	protected abstract String getOpen();
-	protected abstract String getClose();
+	protected abstract String getFork();
+	protected abstract String getJoin();
 	
-	public Set<Node> getPreNodes() {
+	protected Set<Node> getPreNodes() {
 		if (inArcs != null && preNodes == null) {
 			preNodes = new HashSet<Node>();
 			
@@ -37,7 +37,7 @@ public abstract class Node {
 		return preNodes;
 	}
 	
-	public Set<Node> getPostNodes() {
+	protected Set<Node> getPostNodes() {
 		if (outArcs != null && postNodes == null) {
 			postNodes = new HashSet<Node>();
 			
@@ -93,7 +93,7 @@ public abstract class Node {
 		return ecws;
 	}
 
-	public String buildECWS() {
+	protected String buildECWS() {
 		StringBuilder sb = new StringBuilder();
 		if (inArcs != null) {
 			handleInArcs(sb);
@@ -113,7 +113,7 @@ public abstract class Node {
 			} 
 			else if (outArcs.size() > 1) {
 				for (Arc a : outArcs) {
-					sb.append(getOpen());
+					sb.append(getFork());
 					sb.append(a.getOutNode().buildECWS());
 				}
 			}
@@ -121,11 +121,11 @@ public abstract class Node {
 	}
 	private void handleInArcs(StringBuilder sb) {
 		if (inArcs.size() > 1 && unvisitedInArcs > 1) {
-			sb.append(getClose());
+			sb.append(getJoin());
 			unvisitedInArcs--;
 		}
 		else if(inArcs.size() > 1 && unvisitedInArcs == 1) {
-			sb.append(getClose() + this.getLabel() + " ");
+			sb.append(getJoin() + this.getLabel() + " ");
 			unvisitedInArcs--;
 		}
 		

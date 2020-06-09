@@ -2,18 +2,21 @@ package petrinetmodel;
 
 public class Transition extends Node {
 
+	final static String AND_OPEN = "\\( ";
+	final static String AND_CLOSE = "\\) ";
+	
 	public Transition(String s) {
 		super(s.toLowerCase());
 	}
 
 	@Override
-	protected String getOpen() {
-		return "\\( ";
+	protected String getFork() {
+		return AND_OPEN;
 	}
 
 	@Override
-	protected String getClose() {
-		return "\\) ";
+	protected String getJoin() {
+		return AND_CLOSE;
 	}
 
 }

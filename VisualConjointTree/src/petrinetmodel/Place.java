@@ -2,6 +2,9 @@ package petrinetmodel;
 
 public class Place extends Node {
 
+	final static String XOR_OPEN = "\\[ ";
+	final static String XOR_CLOSE = "\\] ";
+	
 	public Place(String s) {
 		super(s.toLowerCase());
 	}
@@ -19,13 +22,13 @@ public class Place extends Node {
 	}*/
 
 	@Override
-	protected String getOpen() {
-		return "\\[ ";
+	protected String getFork() {
+		return XOR_OPEN;
 	}
 
 	@Override
-	protected String getClose() {
-		return "\\] ";
+	protected String getJoin() {
+		return XOR_CLOSE;
 	}
 
 }

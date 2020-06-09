@@ -16,6 +16,10 @@ import treemodel.CtreeBuilder;
 
 public class TestUtil {
 	
+	public final static String INPUT_NETS_DIR = "/Users/ahanapradhan/eclipse-workspace/VisualConjointTree/src/xml2ecws/sample-nets/";
+	public final static String[] PETRINET_XML_FILES = { "andnet1.xml", "andnet2.xml", "andnet3.xml",
+	"andnet4.xml", "andxor1.xml", "andxor2.xml" };
+	
 	public static void deleteFile(String s) {
 		File f = new File(s);
 		f.delete();
@@ -58,6 +62,7 @@ public class TestUtil {
 		}
 		return sb.toString();
 	}
+
 	@Test
 	public void test_dotTest1() {
 
@@ -131,14 +136,11 @@ public class TestUtil {
 		for (Object l : list) {
 			if (l instanceof CNode) {
 				CNode node = (CNode) l;
-				// System.out.println(node.getLabel());
 				sb.append(node.getLabel());
 			} else if (l instanceof String) {
-				// System.out.println((String) l);
 				sb.append(" " + l + " ");
 			} else {
 				sb.append("-");
-				// System.out.println("invalid entry in packet");
 			}
 		}
 		return sb.toString();
