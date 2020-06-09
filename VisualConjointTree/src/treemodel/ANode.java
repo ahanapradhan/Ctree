@@ -1,12 +1,12 @@
 package treemodel;
 
 public class ANode extends AbstractTreeNode {
-    static String labelPrefix = "a";
+    final static String LABEL_PREFIX = "a";
     String label;
     
     @Override
     public String getLabel() {
-    	return labelPrefix + String.valueOf(getId());
+    	return LABEL_PREFIX + String.valueOf(getId());
     }
 
 	@Override

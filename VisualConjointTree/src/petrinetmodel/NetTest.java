@@ -22,7 +22,7 @@ class NetTest {
 
 	@Test
 	void test() {
-		Net m = pnmlParser.readFile(TestUtil.INPUT_NETS_DIR + TestUtil.PETRINET_XML_FILES[0]);
+		Net m = pnmlParser.readPIPExmlFile(TestUtil.INPUT_NETS_DIR + TestUtil.PETRINET_XML_FILES[0]);
 		int i = m.getPlaces().size();
 		assertEquals(i, 6);
 

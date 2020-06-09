@@ -48,7 +48,7 @@ public class PNMLtoCtreeTest {
 	@Test
 	public void test_andnet1_readNNet() {
 		for (String file : TestUtil.PETRINET_XML_FILES) {
-			Net m = pnmlParser.readFile(TestUtil.INPUT_NETS_DIR + file);
+			Net m = pnmlParser.readPIPExmlFile(TestUtil.INPUT_NETS_DIR + file);
 			String nettext = m.printNetForDot();
 			File f = new File(netdotfile);
 			TestUtil.createSampleDotFile(f, nettext);

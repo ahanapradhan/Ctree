@@ -1,34 +1,41 @@
 package petrinetmodel;
 
+import util.IUtils;
+
 public class Place extends Node {
 
-	final static String XOR_OPEN = "\\[ ";
-	final static String XOR_CLOSE = "\\] ";
-	
+	int unvisitedLoopArcs;
+	boolean loopCheck = false;
+	boolean hasLoopArc = false;
+
 	public Place(String s) {
 		super(s.toLowerCase());
+		unvisitedLoopArcs = 0;
 	}
 
-	/*@Override
-	public String buildECWS() {
-		// only place can be source or sink
-        StringBuilder sb = new StringBuilder();
-		sb.append(this.getLabel() + " ");
-		
-		if (this.getOutArcs() != null && this.getOutArcs().size() == 1) {
-			sb.append(getOutArcs().get(0).getOutNode().buildECWS());
+	public boolean doesItHaveLoopArc() {
+		if (!loopCheck && getInArcs() != null) {
+			for (Arc i : getInArcs()) {
+				Node preTrans = i.getInNode();
+				if (getPostNodes() != null && getPostNodes().contains(preTrans)) {
+					hasLoopArc = true;
+					unvisitedLoopArcs++;
+				}
+			}
+			loopCheck = true;
+			unvisitedInArcs -= unvisitedLoopArcs;
 		}
-		return sb.toString();	
-	}*/
+		return hasLoopArc;
+	}
 
 	@Override
 	protected String getFork() {
-		return XOR_OPEN;
+		return IUtils.XOR_OPEN;
 	}
 
 	@Override
 	protected String getJoin() {
-		return XOR_CLOSE;
+		return IUtils.XOR_CLOSE;
 	}
 
 }

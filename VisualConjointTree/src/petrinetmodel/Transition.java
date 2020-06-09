@@ -1,9 +1,10 @@
 package petrinetmodel;
 
+import util.IUtils;
+
 public class Transition extends Node {
 
-	final static String AND_OPEN = "\\( ";
-	final static String AND_CLOSE = "\\) ";
+
 	
 	public Transition(String s) {
 		super(s.toLowerCase());
@@ -11,12 +12,12 @@ public class Transition extends Node {
 
 	@Override
 	protected String getFork() {
-		return AND_OPEN;
+		return IUtils.AND_OPEN;
 	}
 
 	@Override
 	protected String getJoin() {
-		return AND_CLOSE;
+		return IUtils.AND_CLOSE;
 	}
 
 }

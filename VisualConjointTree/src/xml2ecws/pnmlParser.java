@@ -14,6 +14,7 @@ import petrinetmodel.Arc;
 import petrinetmodel.Net;
 import petrinetmodel.Place;
 import petrinetmodel.Transition;
+import util.IUtils;
 
 public class pnmlParser {
 	
@@ -28,13 +29,13 @@ public class pnmlParser {
 	 * The above information is enough to construct the Petri Net Structure.
 	 * Nets are assumed to be 1-safe Nets.
 	 */
-	public static Net readFile(String filename) {
+	public static Net readPIPExmlFile(String filename) {
 		File f = new File(filename);
 		
-		Pattern netLabel = Pattern.compile("<net id=\"([^\"]*)\"");		
-		Pattern place = Pattern.compile("<place id=\"([^\"]*)\">");
-		Pattern transition = Pattern.compile("<transition id=\"([^\"]*)\">");
-		Pattern arc = Pattern.compile("<arc id=\"([^\"]*)\" source=\"([^\"]*)\" target=\"([^\"]*)\"");
+		Pattern netLabel = Pattern.compile(IUtils.PIPE_XML_NET_PATTERN_REGEX);		
+		Pattern place = Pattern.compile(IUtils.PIPE_XML_PLACE_PATTERN_REGEX);
+		Pattern transition = Pattern.compile(IUtils.PIPE_XML_TRANSITION_PATTERN_REGEX);
+		Pattern arc = Pattern.compile(IUtils.PIPE_XML_ARC_PATTERN_REGEX);
 		
 		int placeCount = 0, transitionCount = 0;
 		
@@ -48,8 +49,8 @@ public class pnmlParser {
 				String line = sc.nextLine();
 				
 				Matcher mNetLabel = netLabel.matcher(line);
-				while (mNetLabel.find()) {
-				  System.out.println(mNetLabel.group(1)); // may be useful later
+				if (mNetLabel.find()) {
+				  //System.out.println(mNetLabel.group(1)); // may be useful later
 				}
 				
 				Matcher mPlace = place.matcher(line);
@@ -81,39 +82,7 @@ public class pnmlParser {
 		}		
 	}
 	
-	private static int[][] createNetMatrix(Map<String, Integer> places, 
-			Map<String, Integer> transitions, 
-			Map<String, List<String>> arcs) {
-		
-		/*
-		 * |transitions| x |places| matrix
-		 * p -> t arc : 1
-		 * t -> p arc : -1
-		 */
-		
-		int[][] netm = new int[transitions.size()][places.size()];
-		
-		for (Map.Entry<String, List<String> > e : arcs.entrySet()) {
-			String src = e.getValue().get(0);
-			String trg = e.getValue().get(1);
-			boolean p2t = false;
-			int placeIdx = -1, transIdx = -1; // initialize index variable
-			
-			if (places.containsKey(src) && transitions.containsKey(trg)) {
-				p2t = true;
-				placeIdx = places.get(src);
-				transIdx = transitions.get(trg);
-			} 
-			else if (places.containsKey(trg) && transitions.containsKey(src)) {
-				placeIdx = places.get(trg);
-				transIdx = transitions.get(src);
-			}
-			netm[transIdx][placeIdx] = p2t ? 1 : -1;
-		}
-	return netm;	
-	}
-	
-	public static Net createPetriNetModel(Map<String, Integer> places, 
+	private static Net createPetriNetModel(Map<String, Integer> places, 
 			Map<String, Integer> transitions, 
 			Map<String, List<String>> arcs) {
 		
@@ -139,8 +108,8 @@ public class pnmlParser {
 		
 		for (Map.Entry<String, List<String> > e : arcs.entrySet()) {
 			List<String> srcTrg = e.getValue();
-			String src = srcTrg.get(0);
-			String trg = srcTrg.get(1);
+			String src = srcTrg.get(IUtils.FIRST_INDEX);
+			String trg = srcTrg.get(IUtils.SECOND_INDEX);
 			Place p;
 			Transition t;
 			Arc a = null;
