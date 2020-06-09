@@ -1,6 +1,5 @@
 package petrinetmodel;
 
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -24,6 +23,7 @@ public class Net {
 	}
 	public void setPlaces(Map<String, Place> places) {
 		this.places = places;
+		getPlaces();  // to initialize ps;
 	}
 	public Set<Transition> getTransitions() {
 		if (ts == null || transitions.size() != ts.size()) {
@@ -36,6 +36,7 @@ public class Net {
 	}
 	public void setTransitions(Map<String, Transition> transitions) {
 		this.transitions = transitions;
+		getTransitions(); // to initialize ts
 	}
 	
 	public void addArcs(List<Arc> as) {
@@ -48,18 +49,19 @@ public class Net {
 	
 	public String printNetForDot() {
 		StringBuilder sb = new StringBuilder();
-		sb.append("digraph G {\n");
+		//sb.append("\n```dot\n");
+	    sb.append("digraph N {\n");
 		sb.append("    rankdir=\"LR\";\n");
 		sb.append("    subgraph place {\n");
 		sb.append("    graph [shape=circle];\n");
 		sb.append("    node [shape=circle,fixedsize=true,width=0.7, style=filled, color=darkseagreen2];\n");
-	    for(Place p : getPlaces()) {
+	    for(Place p : ps) {
 	    	sb.append("    "+ p.getLabel()+";\n");
 	    }
 		sb.append("    }\n");
 		sb.append("    subgraph transitions {\n");
 		sb.append("    node [shape=rect,height=0.7,width=0.2, style=filled,color=\".7 .3 1.0\"];\n");
-		for(Transition t : getTransitions()) {
+		for(Transition t : ts) {
 	    	sb.append("    "+ t.getLabel()+";\n");
 	    }  	        
 	    sb.append("    }\n");
@@ -67,8 +69,19 @@ public class Net {
 				sb.append("    \"" + a.getInNode().getLabel() + "\" -> \"" + a.getOutNode().getLabel() + "\";\n");
 		}
 		sb.append("}\n");
+		//sb.append("```\n");
 		return sb.toString();
 	}
-
-
+	
+	public String getECWS() {
+		StringBuilder sb = new StringBuilder();
+		
+		for(Place p : ps) {
+			if (p.getInArcs() == null) {
+				// source place
+				sb.append(p.getECWS());				
+			}
+		}	
+		return sb.toString();
+	}
 }

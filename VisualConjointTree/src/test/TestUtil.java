@@ -25,6 +25,16 @@ public class TestUtil {
 		}
 	}
 	
+	public static String createTwoImageDot(String img1, String img2) {
+		return "graph {\n" +
+	        "    node [shape=none,label=\" \"]\n" +
+	        "    d1 [image=\"" + img1 +"\"]\n" +
+	        "    d2 [image=\"" + img2 +"\"]\n" +
+	        "    edge [style=invis]\n"+
+	        "    d1--d2\n"+
+	        "}\n";
+	}
+	
 	public static void createSampleDotFile(File f, String text) {
 		try {
 			PrintWriter p = new PrintWriter(f);
@@ -112,10 +122,7 @@ public class TestUtil {
 			fail();
 		}
 	}
-	
-	public static void showDotGraphJava(ProcessBuilder pb, String outputFile) {
-		ShowPng.showImage(outputFile);
-	}
+
 	
 	public static String getPackets(String ecws) {
 		String[] items = ecws.split(" ");

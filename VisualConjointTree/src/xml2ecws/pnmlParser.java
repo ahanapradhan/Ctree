@@ -147,12 +147,16 @@ public class pnmlParser {
 			if (ps.containsKey(src) && ts.containsKey(trg)) {
 				p = ps.get(src);
 				t = ts.get(trg);
-				a = new Arc(p,t);		
+				a = new Arc(p,t);
+				p.addOutArc(a);
+				t.addInArc(a);
 			} 
 			else if (ps.containsKey(trg) && ts.containsKey(src)) {
 				p = ps.get(trg);
 				t = ts.get(src);
 				a = new Arc(t,p);
+				t.addOutArc(a);
+				p.addInArc(a);
 			}
 			if (a !=  null) { // may be null check not needed if everything is proper
 				pnarcs.add(a);

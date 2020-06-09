@@ -6,4 +6,14 @@ public class Transition extends Node {
 		super(s.toLowerCase());
 	}
 
+	@Override
+	protected String getOpen() {
+		return "\\( ";
+	}
+
+	@Override
+	protected String getClose() {
+		return "\\) ";
+	}
+
 }

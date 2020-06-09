@@ -61,8 +61,11 @@ public class Ctree {
 			if (n.getParent() != -1) {
 				sb.append("    \"" + getNodebyId(n.getParent()).getVisLabel() + "\" -> \"" + n.getVisLabel() + "\";\n");
 			}
+			else {
+				sb.append("    \"" + n.getVisLabel() + "\";\n");
+			}
 			if (n instanceof ANode) {
-				sb.append("    \"" + n.getVisLabel() + "\" [shape=box,style=filled,color=\".7 .3 1.0\"];\n");
+				sb.append("    \"" + n.getVisLabel() + "\" [shape=box,style=filled,color=lightcoral];\n");
 			}
 		}
 		sb.append("}\n");
