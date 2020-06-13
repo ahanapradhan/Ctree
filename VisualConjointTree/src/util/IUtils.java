@@ -5,6 +5,7 @@ public interface IUtils {
 	final String PIPE_XML_PLACE_PATTERN_REGEX = "<place id=\"([^\"]*)\">";
 	final String PIPE_XML_TRANSITION_PATTERN_REGEX = "<transition id=\"([^\"]*)\">";
 	final String PIPE_XML_ARC_PATTERN_REGEX = "<arc id=\"([^\"]*)\" source=\"([^\"]*)\" target=\"([^\"]*)\"";
+	final String ORIGINAL_CTREE_NAME = "Original Ctree";
 
 	final static String XOR_OPEN = "\\[ ";
 	final static String XOR_CLOSE = "\\] ";	

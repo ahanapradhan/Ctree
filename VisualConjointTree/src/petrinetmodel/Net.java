@@ -11,6 +11,11 @@ public class Net {
 	Set<Place> ps = null;
 	Set<Transition> ts = null;
 	List<Arc> arcs = null;
+	String name;
+	
+	public void setName(String n) {
+		name = n;
+	}
 	
 	public Set<Place> getPlaces() {
 		if (ps == null || places.size() != ps.size()) {

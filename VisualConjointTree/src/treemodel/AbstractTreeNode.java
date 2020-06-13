@@ -3,6 +3,8 @@ package treemodel;
 import java.util.ArrayList;
 import java.util.List;
 
+import util.IUtils;
+
 public abstract class AbstractTreeNode {
 	static int uniq = 0;
 	int id;
@@ -13,6 +15,22 @@ public abstract class AbstractTreeNode {
 		id = uniq++;
 		parentid = -1;
 		childrenids = null;
+	}
+
+	public AbstractTreeNode(AbstractTreeNode a) {
+		// only used for copy construction
+		id = a.id;
+		parentid = a.parentid;
+		if (a.childrenids != null) {
+			childrenids = new ArrayList<Integer>(a.childrenids);
+		} else {
+			childrenids = null;
+		}
+	}
+	
+	public void removeOtherChildrenButMe(AbstractTreeNode n) {
+		childrenids.clear();
+		childrenids.add(n.getId());
 	}
 
 	public int getId() {
@@ -34,24 +52,30 @@ public abstract class AbstractTreeNode {
 		childrenids.add(i);
 	}
 
-	public String getChildrenIds() {
-		if (childrenids != null) {
-			StringBuilder sb = new StringBuilder();
-			for (int i : childrenids) {
-				sb.append(i + " ");
-			}
-			return sb.toString();
-		} else {
-			return "none";
-		}
+	public List<Integer> getChildrenIds() {
+		return childrenids;
 	}
 
 	public int howManyChildren() {
+		if (childrenids == null) {
+			return IUtils.ZERO;
+		}
 		return childrenids.size();
 	}
 	
 	public abstract String getLabel();
 
 	public abstract String getVisLabel();
+
+	public void removeAllPlaces() {
+	}
+
+	public void removeChild(int id) {
+		for (int i = 0; i < childrenids.size(); i++) {
+			if (childrenids.get(i) == id) {
+				childrenids.remove(i);
+			}
+		}
+	}
 
 }

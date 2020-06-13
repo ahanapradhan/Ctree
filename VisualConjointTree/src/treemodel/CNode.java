@@ -13,6 +13,12 @@ public class CNode extends AbstractTreeNode {
 		places = null;
 		label = null;
 	}
+	
+	public CNode(CNode n) { // only used for copy construction
+		super(n);
+		places = new HashSet<String>(n.getPlaces());
+		label = null;
+	}
 
 	public void addPlace(String p) {
 		if (places == null) {
@@ -25,6 +31,16 @@ public class CNode extends AbstractTreeNode {
 		for (String p : sp) {
 			addPlace(p);
 		}
+	}
+	
+	public void removePlaces(Set<String> sp) {
+		places.removeAll(sp);
+		label = null; // has to form new label later when needed
+	}
+	
+	public void removePlace(String p) {
+		places.remove(p);
+		label = null; // has to form new label later when needed
 	}
 
 	public Set<String> getPlaces() {
@@ -51,6 +67,16 @@ public class CNode extends AbstractTreeNode {
 			builder.append(s);
 		}
 		return builder.toString();
+	}
+	
+	public boolean doesItHaveIt(String p) {
+		return places.contains(p);
+	}
+
+	@Override
+	public void removeAllPlaces() {
+		places.clear();
+		label = null;		
 	}
 
 }

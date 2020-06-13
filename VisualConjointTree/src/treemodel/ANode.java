@@ -2,7 +2,7 @@ package treemodel;
 
 public class ANode extends AbstractTreeNode {
     final static String LABEL_PREFIX = "a";
-    String label;
+    String label = null;
     
     @Override
     public String getLabel() {
@@ -12,5 +12,13 @@ public class ANode extends AbstractTreeNode {
 	@Override
 	public String getVisLabel() {
 		return getLabel();
+	}
+	
+	public ANode(ANode a) {
+		super(a);
+	}
+
+	public ANode() {
+		super();
 	}
 }
