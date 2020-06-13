@@ -1,9 +1,7 @@
 package test;
 
-
 import java.io.File;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
+
 import org.junit.jupiter.api.Test;
 
 import petrinetmodel.Net;
@@ -11,20 +9,14 @@ import treemodel.Ctree;
 import treemodel.CtreeBuilder;
 import xml2ecws.pnmlParser;
 
-public class PNMLtoCtreeTest {
-
-	@BeforeEach
-	public void setUp() throws Exception {
-	}
-
-	@AfterEach
-	public void tearDown() throws Exception {
-		// deleteFiles();
-	}
-
+public class UnstructuredXORpnmlToCtreeTest {
+	
+	final static String[] PETRI_NET_XML = {"unbalancedXOR1.xml"/*, "unbalancedXOR2.xml", "andnetdouble.xml"*/};
+	
 	@Test
-	public void test_andnet1_readNNet() {
-		for (String file : TestUtils.PETRINET_XML_FILES) {
+	public void test_unbalancedXORtest() {
+		
+		for (String file : PETRI_NET_XML) {
 			Net m = pnmlParser.readPIPExmlFile(TestUtils.INPUT_NETS_DIR + file);
 			String nettext = m.printNetForDot();
 			File f = new File(TestUtils.netdotfile);
@@ -58,5 +50,6 @@ public class PNMLtoCtreeTest {
 		}
 
 	}
+
 
 }

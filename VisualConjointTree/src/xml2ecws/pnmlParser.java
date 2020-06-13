@@ -43,6 +43,7 @@ public class pnmlParser {
 		Map<String, Integer> transitionMap = new HashMap<String, Integer>();
 		Map<String, List<String> > arcMap = new HashMap<>();
 		
+		String netname = "";
 		try {
 			Scanner sc = new Scanner(f);		
 			while (sc.hasNextLine()) {
@@ -50,7 +51,7 @@ public class pnmlParser {
 				
 				Matcher mNetLabel = netLabel.matcher(line);
 				if (mNetLabel.find()) {
-				  //System.out.println(mNetLabel.group(1)); // may be useful later
+				  netname = mNetLabel.group(1); // may be useful later
 				}
 				
 				Matcher mPlace = place.matcher(line);
@@ -74,6 +75,7 @@ public class pnmlParser {
 			sc.close();
 			
 			Net pn = createPetriNetModel(placeMap, transitionMap, arcMap);
+			pn.setName(netname);
 			return pn;
 			
 		} catch (FileNotFoundException e) {

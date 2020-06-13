@@ -22,55 +22,55 @@ public class pnmlParserTest {
 	@AfterEach
 	void tearDown() throws Exception {
 		TimeUnit.SECONDS.sleep(3);
-		TestUtil.deleteFile(dotFile);
-	    TestUtil.deleteFile(outputFile);
+		TestUtils.deleteFile(dotFile);
+	    TestUtils.deleteFile(outputFile);
 	}
 	
 	@Test
 	public void test_andnet1_readNNet() {
-		Net m = pnmlParser.readPIPExmlFile(TestUtil.INPUT_NETS_DIR+"andnet1.xml");
+		Net m = pnmlParser.readPIPExmlFile(TestUtils.INPUT_NETS_DIR+"andnet1.xml");
 		String nettext = m.printNetForDot();
 		File f = new File(dotFile);
-		TestUtil.createSampleDotFile(f, nettext);
-		String printedText = TestUtil.readFile(f);
+		TestUtils.createSampleDotFile(f, nettext);
+		String printedText = TestUtils.readFile(f);
 
 		assertEquals(nettext, printedText);
 
 		ProcessBuilder pb = new ProcessBuilder();
-		TestUtil.runDot(dotFile, pb, outputFile);
-		TestUtil.showDotGraphMac(pb, outputFile);
+		TestUtils.runDot(dotFile, pb, outputFile);
+		TestUtils.showDotGraphMac(pb, outputFile);
 		
 	}
 	
 	@Test
 	public void test_andnet2_readNNet() {
-		Net m = pnmlParser.readPIPExmlFile(TestUtil.INPUT_NETS_DIR+"net1.pnml");
+		Net m = pnmlParser.readPIPExmlFile(TestUtils.INPUT_NETS_DIR+"net1.pnml");
 		String nettext = m.printNetForDot();
 		File f = new File(dotFile);
-		TestUtil.createSampleDotFile(f, nettext);
-		String printedText = TestUtil.readFile(f);
+		TestUtils.createSampleDotFile(f, nettext);
+		String printedText = TestUtils.readFile(f);
 
 		assertEquals(nettext, printedText);
 
 		ProcessBuilder pb = new ProcessBuilder();
-		TestUtil.runDot(dotFile, pb, outputFile);
-		TestUtil.showDotGraphMac(pb, outputFile);
+		TestUtils.runDot(dotFile, pb, outputFile);
+		TestUtils.showDotGraphMac(pb, outputFile);
 		
 	}
 	
 	@Test
 	public void test_andnet3_readNNet() {
-		Net m = pnmlParser.readPIPExmlFile(TestUtil.INPUT_NETS_DIR+"net2.xml");
+		Net m = pnmlParser.readPIPExmlFile(TestUtils.INPUT_NETS_DIR+"net2.xml");
 		String nettext = m.printNetForDot();
 		File f = new File(dotFile);
-		TestUtil.createSampleDotFile(f, nettext);
-		String printedText = TestUtil.readFile(f);
+		TestUtils.createSampleDotFile(f, nettext);
+		String printedText = TestUtils.readFile(f);
 
 		assertEquals(nettext, printedText);
 
 		ProcessBuilder pb = new ProcessBuilder();
-		TestUtil.runDot(dotFile, pb, outputFile);
-		TestUtil.showDotGraphMac(pb, outputFile);
+		TestUtils.runDot(dotFile, pb, outputFile);
+		TestUtils.showDotGraphMac(pb, outputFile);
 		
 	}
 }
