@@ -67,7 +67,7 @@ public abstract class AbstractTreeNode {
 
 	public abstract String getVisLabel();
 
-	public void removeAllPlaces() {
+	protected void removeAllPlaces() {
 	}
 
 	public void removeChild(int id) {
@@ -76,6 +76,10 @@ public abstract class AbstractTreeNode {
 				childrenids.remove(i);
 			}
 		}
+	}
+	
+	protected boolean isThereNoPlace() {
+		return true;
 	}
 
 }

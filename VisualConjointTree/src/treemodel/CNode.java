@@ -3,6 +3,8 @@ package treemodel;
 import java.util.HashSet;
 import java.util.Set;
 
+import util.IUtils;
+
 public class CNode extends AbstractTreeNode {
 
 	Set<String> places;
@@ -33,12 +35,12 @@ public class CNode extends AbstractTreeNode {
 		}
 	}
 	
-	public void removePlaces(Set<String> sp) {
+	protected void removePlaces(Set<String> sp) {
 		places.removeAll(sp);
 		label = null; // has to form new label later when needed
 	}
 	
-	public void removePlace(String p) {
+	protected void removePlace(String p) {
 		places.remove(p);
 		label = null; // has to form new label later when needed
 	}
@@ -69,14 +71,24 @@ public class CNode extends AbstractTreeNode {
 		return builder.toString();
 	}
 	
-	public boolean doesItHaveIt(String p) {
+	protected boolean doesItHaveIt(String p) {
 		return places.contains(p);
 	}
 
 	@Override
-	public void removeAllPlaces() {
+	protected void removeAllPlaces() {
 		places.clear();
 		label = null;		
 	}
+	
+	@Override
+	protected boolean isThereNoPlace() {
+		return (places == null || places.size() == IUtils.ZERO);
+	}
+
+	protected boolean isSubset(CNode small) {
+		return places.containsAll(small.getPlaces());
+	}
+
 
 }

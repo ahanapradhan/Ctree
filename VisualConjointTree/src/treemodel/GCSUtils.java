@@ -1,5 +1,7 @@
 package treemodel;
 
+import java.util.Set;
+
 public class GCSUtils {
 
 	public static Ctree getGCS(Ctree tree, String place) {
@@ -20,5 +22,17 @@ public class GCSUtils {
 	public static Ctree deletePlacesFrom(Ctree tree, String[] places) {
 		tree.deletePlaces(places);
 		return tree;
+	}
+	
+	public static Set<String> getAllPlaces(Ctree tree){
+		return tree.getAllPlaces();
+	}
+	
+	public static boolean isBreakOffSet(Ctree tree, String[] ps) {
+		return tree.isBreakOffSet(ps);
+	}
+	
+	public static boolean doesHaveMPE(Ctree small, Ctree large) {
+		return large.doesHaveMPE(small);
 	}
 }

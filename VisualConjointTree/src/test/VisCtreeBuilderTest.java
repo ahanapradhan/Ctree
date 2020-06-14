@@ -12,11 +12,9 @@ import org.junit.jupiter.api.Test;
 
 import treemodel.Ctree;
 import treemodel.CtreeBuilder;
+import treemodel.GCSUtils;
 
 class VisCtreeBuilderTest {
-	static String dotFile = "smallgraph.dot";
-	static String outputFile = "ctree.png";
-
 	@BeforeEach
 	void setUp() throws Exception {
 	}
@@ -24,8 +22,8 @@ class VisCtreeBuilderTest {
 	@AfterEach
 	void tearDown() throws Exception {
 		TimeUnit.SECONDS.sleep(3);
-		TestUtil.deleteFile(dotFile);
-	    TestUtil.deleteFile(outputFile);
+		TestUtils.deleteFile(TestUtils.dotFile);
+	    TestUtils.deleteFile(TestUtils.outputFile);
 	}
 	
 	@Test
@@ -36,15 +34,26 @@ class VisCtreeBuilderTest {
 				+ "t60 p66 \\) t6 p7 t333 \\( p990 \\) \\( p991 \\) \\( p1010 \\) t334 p98");
 		String intext = tree.printCtreeForDot();
 
-		File f = new File(dotFile);
-		TestUtil.createSampleDotFile(f, intext);
-		String printedText = TestUtil.readFile(f);
+		File f = new File(TestUtils.dotFile);
+		TestUtils.createSampleDotFile(f, intext);
+		String printedText = TestUtils.readFile(f);
 
 		assertEquals(intext, printedText);
+		
+		Ctree gcstree = GCSUtils.getGCS(tree, "p33");
+		String gcstext = gcstree.printCtreeForDot();
+		f = new File(TestUtils.gcsDotFile);
+		TestUtils.createSampleDotFile(f, gcstext);
 
 		ProcessBuilder pb = new ProcessBuilder();
-		TestUtil.runDot(dotFile, pb, outputFile);
-		TestUtil.showDotGraphMac(pb, outputFile);
+		TestUtils.runDot(TestUtils.dotFile, pb, TestUtils.outputFile);
+		TestUtils.runDot(TestUtils.gcsDotFile, pb, TestUtils.gcsFile);
+		
+		f = new File(TestUtils.mergedTreeFile);
+		String bothTrees = TestUtils.createTwoImageDot(TestUtils.outputFile, TestUtils.gcsFile);
+		TestUtils.createSampleDotFile(f, bothTrees);
+		TestUtils.runDot(TestUtils.mergedTreeFile, pb, TestUtils.mergedTreeImg);
+		TestUtils.showDotGraphMac(pb, TestUtils.mergedTreeFile);
 	}
 	
 	@Test
@@ -57,15 +66,15 @@ class VisCtreeBuilderTest {
 		assertEquals(tree.getRoot().howManyChildren(), 1);
 		String intext = tree.printCtreeForDot();
 
-		File f = new File(dotFile);
-		TestUtil.createSampleDotFile(f, intext);
-		String printedText = TestUtil.readFile(f);
+		File f = new File(TestUtils.dotFile);
+		TestUtils.createSampleDotFile(f, intext);
+		String printedText = TestUtils.readFile(f);
 
 		assertEquals(intext, printedText);
 
 		ProcessBuilder pb = new ProcessBuilder();
-		TestUtil.runDot(dotFile, pb, outputFile);
-		TestUtil.showDotGraphMac(pb, outputFile);
+		TestUtils.runDot(TestUtils.dotFile, pb, TestUtils.outputFile);
+		TestUtils.showDotGraphMac(pb, TestUtils.outputFile);
 	}
 	
 	@Test
@@ -79,15 +88,15 @@ class VisCtreeBuilderTest {
 		//tree.printCtree();
 		String intext = tree.printCtreeForDot();
 
-		File f = new File(dotFile);
-		TestUtil.createSampleDotFile(f, intext);
-		String printedText = TestUtil.readFile(f);
+		File f = new File(TestUtils.dotFile);
+		TestUtils.createSampleDotFile(f, intext);
+		String printedText = TestUtils.readFile(f);
 
 		assertEquals(intext, printedText);
 
 		ProcessBuilder pb = new ProcessBuilder();
-		TestUtil.runDot(dotFile, pb, outputFile);
-		TestUtil.showDotGraphMac(pb, outputFile);
+		TestUtils.runDot(TestUtils.dotFile, pb, TestUtils.outputFile);
+		TestUtils.showDotGraphMac(pb, TestUtils.outputFile);
 	}
 
 	@Test
@@ -95,40 +104,40 @@ class VisCtreeBuilderTest {
 		Ctree tree = CtreeBuilder.buildCtree("p1 t1 \\( p2 t2 \\( p3 \\) \\( p4 \\) t3 p5 \\) \\( p6 \\) t6 p7");
 		String intext = tree.printCtreeForDot();
 
-		File f = new File(dotFile);
-		TestUtil.createSampleDotFile(f, intext);
-		String printedText = TestUtil.readFile(f);
+		File f = new File(TestUtils.dotFile);
+		TestUtils.createSampleDotFile(f, intext);
+		String printedText = TestUtils.readFile(f);
 
 		assertEquals(intext, printedText);
 
 		ProcessBuilder pb = new ProcessBuilder();
-		TestUtil.runDot(dotFile, pb, outputFile);
-		TestUtil.showDotGraphMac(pb, outputFile);
+		TestUtils.runDot(TestUtils.dotFile, pb, TestUtils.outputFile);
+		TestUtils.showDotGraphMac(pb, TestUtils.outputFile);
 	}
 
 	@Test
 	void testGetPackets() {
 		String s;
-		s = TestUtil.getPackets("p1 t1 \\{ p2 t2 p3 t3 p4 \\} \\{ t4 p5 t5 \\} t6 p6");
+		s = TestUtils.getPackets("p1 t1 \\{ p2 t2 p3 t3 p4 \\} \\{ t4 p5 t5 \\} t6 p6");
 		assertTrue("p1p2p3p4p5p6".equals(s));
 
-		s = TestUtil.getPackets("p1 t1 p2 t2 \\( p3 t3 p4 t4 p5 \\) \\( p6 t5 p7 \\) t6 p8 t7 p9");
+		s = TestUtils.getPackets("p1 t1 p2 t2 \\( p3 t3 p4 t4 p5 \\) \\( p6 t5 p7 \\) t6 p8 t7 p9");
 		assertTrue("p1p2 \\( p3p4p5 \\)  \\( p6p7 \\) p8p9".equals(s));
 
-		s = TestUtil.getPackets("p1 \\[ t1 p2 t2 \\] \\[ t3 p3 t4 \\] p4");
+		s = TestUtils.getPackets("p1 \\[ t1 p2 t2 \\] \\[ t3 p3 t4 \\] p4");
 		assertTrue("p1p2p3p4".equals(s));
 
-		s = TestUtil.getPackets(
+		s = TestUtils.getPackets(
 				"p1 t1 p2 t2 \\( p11 t8 \\( p3 t3 p4 \\) \\( p5 t4 p6 \\) t5 p9 \\) \\( p7 t6 p8 \\) t7 p106");
 		assertTrue("p1p2 \\( p11 \\( p3p4 \\)  \\( p5p6 \\) p9 \\)  \\( p7p8 \\) p106".equals(s));
 
-		s = TestUtil.getPackets("p1 t1 \\{ p2 \\[ t2 p3 t3 \\] \\[ t7 p7 t8 \\] p4 \\} \\{ t4 p5 t5 \\} t6 p6");
+		s = TestUtils.getPackets("p1 t1 \\{ p2 \\[ t2 p3 t3 \\] \\[ t7 p7 t8 \\] p4 \\} \\{ t4 p5 t5 \\} t6 p6");
 		assertTrue("p1p2p3p4p5p6p7".equals(s));
 
-		s = TestUtil.getPackets("p1 t1 p2 t2 p3 t3 p4");
+		s = TestUtils.getPackets("p1 t1 p2 t2 p3 t3 p4");
 		assertTrue("p1p2p3p4".equals(s));
 
-		s = TestUtil.getPackets(
+		s = TestUtils.getPackets(
 				"p1 t1 \\{ p2 \\} \\{ t2 p3 t3 \\} t4 \\( p10 t9 p11 \\) \\( p4 \\( p5 t6 p7 \\) \\( p6 t7 p8 \\) p9 \\) t10 p12");
 		assertTrue("p1p2p3 \\( p11p10 \\)  \\( p4 \\( p5p7 \\)  \\( p6p8 \\) p9 \\) p12".equals(s));
 	}
@@ -136,7 +145,7 @@ class VisCtreeBuilderTest {
 	@Test
 	void test_checkall_doubleNestingTest() {
 
-		String s = TestUtil.getPackets(
+		String s = TestUtils.getPackets(
 				"p1 t1 p2 t2 \\( p3 t3 p4 t4 p5 \\) \\( p6 t5 \\( p100 \\) \\( p200 \\) t11 p7 \\) t6 p8 t7 p9");
 		assertTrue("p1p2 \\( p3p4p5 \\)  \\( p6 \\( p100 \\)  \\( p200 \\) p7 \\) p8p9".equals(s));
 		Ctree tree = CtreeBuilder.buildCtree(

@@ -2,6 +2,7 @@ package treemodel;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
@@ -39,6 +40,36 @@ class GCSUtilsTest {
 		}
 		TestUtils.deleteFile(netdotfile);
 		TestUtils.deleteFile(netimgfile);
+	}
+	
+	@Test
+	public void test_breakoffSetTest() {
+		Net m = pnmlParser.readPIPExmlFile(TestUtils.INPUT_NETS_DIR + TestUtils.PETRINET_XML_FILES[6]);
+		String ecws = m.getECWS();
+		Ctree tree = CtreeBuilder.buildCtree(ecws);
+		tree.setName("Net1");
+
+		ProcessBuilder pb = new ProcessBuilder();
+
+		String intext = tree.printCtreeForDot();
+
+		File f = new File(TestUtils.dotFile);
+		TestUtils.createSampleDotFile(f, intext);
+		TestUtils.runDot(TestUtils.dotFile, pb, TestUtils.outputFile);
+		TestUtils.showDotGraphMac(pb, TestUtils.outputFile);
+
+		tree.setName("Net1");
+		Ctree tree1 = new Ctree(tree);
+		assertTrue(GCSUtils.isBreakOffSet(tree1,
+				new String[] { "p14", "p15", "p8", "p10", "p6", "p2", "p11", "p0", "p25", "p5" }));
+		Ctree tree2 = new Ctree(tree);
+		assertTrue(GCSUtils.isBreakOffSet(tree2, new String[] { "p22", "p21", "p11", "p0", "p25", "p5" }));
+		Ctree tree3 = new Ctree(tree);
+		assertFalse(GCSUtils.isBreakOffSet(tree3,
+				new String[] { "p15", "p8", "p10", "p6", "p2", "p11", "p0", "p25", "p5" }));
+		Ctree tree4 = new Ctree(tree);
+		assertTrue(GCSUtils.isBreakOffSet(tree4,
+				new String[] { "p7", "p9", "p6", "p2", "p11", "p0", "p25", "p5", "p12" }));
 	}
 	
 	@Ignore

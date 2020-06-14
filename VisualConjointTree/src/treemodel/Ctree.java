@@ -3,7 +3,9 @@ package treemodel;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Queue;
 import java.util.Set;
 
 import util.IUtils;
@@ -110,7 +112,7 @@ public class Ctree {
 		return label;
 	}
 
-	public void removeSubtreeOf(AbstractTreeNode abstractTreeNode) { // including cn itself
+	protected void removeSubtreeOf(AbstractTreeNode abstractTreeNode) { // including cn itself
 		AbstractTreeNode pn = getNodebyId(abstractTreeNode.getParent());
 		if (pn != null) {
 			pn.removeChild(abstractTreeNode.getId());
@@ -131,7 +133,7 @@ public class Ctree {
 		return ret;
 	}
 
-	public void clearTillRoot(AbstractTreeNode cn) {
+	protected void clearTillRoot(AbstractTreeNode cn) {
 		// cn has been deleted from tree
 		// remove/clear only the ancestors
 		//start from parent of cn
@@ -154,18 +156,6 @@ public class Ctree {
 		// clear the line of ancestors
 		
 	}
-
-	public void deletePlace(String p) {
-		for (AbstractTreeNode n : nodes) {
-			if (n instanceof CNode) {
-				CNode cn = (CNode) n;
-				if (cn.doesItHaveIt(p)) {
-					cn.removePlace(p);
-					break;
-				}
-			}
-		}
-	}
 	
 	protected void deletePlaces(String[] ps) {
 		for (AbstractTreeNode n : nodes) {
@@ -174,15 +164,108 @@ public class Ctree {
 				cn.removePlaces(new HashSet<String>(Arrays.asList(ps)));
 			}
 		}
+		root.removePlaces(new HashSet<String>(Arrays.asList(ps)));
 	}
 	
 	protected boolean isDysfunctionalTree() {
-		return false;
+		
+		boolean rootempty = root.isThereNoPlace();
+		boolean reachLeaf = false;
+		Queue<AbstractTreeNode> q = new LinkedList<AbstractTreeNode>();
+		q.add(root);
+		while (!q.isEmpty()) {
+			AbstractTreeNode n = q.poll();
+			List<Integer> ch = n.getChildrenIds();
+			if (ch == null || ch.size() == IUtils.ZERO) {
+				reachLeaf = true;
+				break;
+			}
+			for (Integer i : ch) {
+				AbstractTreeNode chn = getNodebyId(i);
+				if (chn.isThereNoPlace()) {
+					q.add(chn);
+				}
+			}
+		}
+		return rootempty && reachLeaf;
 	}
 	
 	protected boolean isBreakOffSet(String[] ps) {
 		deletePlaces(ps);
 		return isDysfunctionalTree();
+	}
+
+	protected Set<String> getAllPlaces() {
+		Set<String> places = new HashSet<String>();
+		for (AbstractTreeNode n : nodes) {
+			if (n instanceof CNode) {
+				places.addAll(((CNode) n).getPlaces());
+			}
+		}
+		return places;
+	}
+	
+
+	private boolean doesHaveMPE(ANode big, ANode small, Ctree smtree) {
+		if (big.howManyChildren() != small.howManyChildren()) {
+			return false;
+		}
+		// here, null or 0 children impossible
+		Set<AbstractTreeNode> bigAnds = getChildren(big);
+		Set<AbstractTreeNode> smallAnds = smtree.getChildren(small);
+		int MPEcount = IUtils.ZERO;
+		// both not null
+		for (AbstractTreeNode sn : smallAnds) {
+			for(AbstractTreeNode bn : bigAnds) {
+				if (doesHaveMPE((CNode)bn, (CNode)sn, smtree)) {
+					MPEcount++;
+					break;
+				}
+			}
+		}
+		return (MPEcount == smallAnds.size());
+	}
+	
+	private boolean doesHaveMPE(CNode big, CNode small, Ctree smtree) {
+		if (!big.isSubset(small)) {
+			return false;
+		}
+		Set<AbstractTreeNode> bigAnds = getChildren(big);
+		Set<AbstractTreeNode> smallAnds = smtree.getChildren(small);
+		if (bigAnds == null) {
+			return (smallAnds == null ? true : false);
+		}
+		else {
+			if (smallAnds == null) {
+				return true;
+			}
+		}
+		int MPEcount = IUtils.ZERO;
+		// both not null
+		for (AbstractTreeNode sn : smallAnds) {
+			for(AbstractTreeNode bn : bigAnds) {
+				if (doesHaveMPE((ANode)bn, (ANode)sn, smtree)) {
+					MPEcount++;
+					break;
+				}
+			}
+		}
+		return (MPEcount == smallAnds.size());
+	}
+
+	private Set<AbstractTreeNode> getChildren(AbstractTreeNode n) {
+		if (n.howManyChildren() == IUtils.ZERO) {
+			return null;
+		}
+		Set<AbstractTreeNode> set = new HashSet<AbstractTreeNode>();
+		for (Integer i : n.getChildrenIds()) {
+			set.add(getNodebyId(i));
+		}
+		return set;
+	}
+
+	protected boolean doesHaveMPE(Ctree small) {
+		return doesHaveMPE((CNode) root, (CNode) small.getRoot(), small);
 	}
 
 }
