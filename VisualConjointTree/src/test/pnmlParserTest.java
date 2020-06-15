@@ -9,9 +9,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import petrinetmodel.Net;
-import xml2ecws.pnmlParser;
+import xml2ecws.PNMLParser;
 
-public class pnmlParserTest {
+public class PNMLParserTest {
 	static String dotFile = "digraph.dot";
 	static String outputFile = "petrinet.png";
     
@@ -28,7 +28,7 @@ public class pnmlParserTest {
 	
 	@Test
 	public void test_andnet1_readNNet() {
-		Net m = pnmlParser.readPIPExmlFile(TestUtils.INPUT_NETS_DIR+"andnet1.xml");
+		Net m = PNMLParser.readPIPExmlFile(TestUtils.INPUT_NETS_DIR+"andnet1.xml");
 		String nettext = m.printNetForDot();
 		File f = new File(dotFile);
 		TestUtils.createSampleDotFile(f, nettext);
@@ -44,7 +44,7 @@ public class pnmlParserTest {
 	
 	@Test
 	public void test_andnet2_readNNet() {
-		Net m = pnmlParser.readPIPExmlFile(TestUtils.INPUT_NETS_DIR+"net1.pnml");
+		Net m = PNMLParser.readPIPExmlFile(TestUtils.INPUT_NETS_DIR+"net1.pnml");
 		String nettext = m.printNetForDot();
 		File f = new File(dotFile);
 		TestUtils.createSampleDotFile(f, nettext);
@@ -60,7 +60,7 @@ public class pnmlParserTest {
 	
 	@Test
 	public void test_andnet3_readNNet() {
-		Net m = pnmlParser.readPIPExmlFile(TestUtils.INPUT_NETS_DIR+"net2.xml");
+		Net m = PNMLParser.readPIPExmlFile(TestUtils.INPUT_NETS_DIR+"net2.xml");
 		String nettext = m.printNetForDot();
 		File f = new File(dotFile);
 		TestUtils.createSampleDotFile(f, nettext);

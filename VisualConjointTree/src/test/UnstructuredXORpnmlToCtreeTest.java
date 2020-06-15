@@ -7,7 +7,7 @@ import org.junit.jupiter.api.Test;
 import petrinetmodel.Net;
 import treemodel.Ctree;
 import treemodel.CtreeBuilder;
-import xml2ecws.pnmlParser;
+import xml2ecws.PNMLParser;
 
 public class UnstructuredXORpnmlToCtreeTest {
 	
@@ -17,7 +17,7 @@ public class UnstructuredXORpnmlToCtreeTest {
 	public void test_unbalancedXORtest() {
 		
 		for (String file : PETRI_NET_XML) {
-			Net m = pnmlParser.readPIPExmlFile(TestUtils.INPUT_NETS_DIR + file);
+			Net m = PNMLParser.readPIPExmlFile(TestUtils.INPUT_NETS_DIR + file);
 			String nettext = m.printNetForDot();
 			File f = new File(TestUtils.netdotfile);
 			TestUtils.createSampleDotFile(f, nettext);
@@ -28,7 +28,7 @@ public class UnstructuredXORpnmlToCtreeTest {
 			String ecws = m.getECWS();
 			System.out.println(ecws);
 
-			Ctree tree = CtreeBuilder.buildCtree(ecws);
+			Ctree tree = CtreeBuilder.buildCtree(ecws, m.getName());
 
 			String intext = tree.printCtreeForDot();
 

@@ -16,7 +16,7 @@ import petrinetmodel.Place;
 import petrinetmodel.Transition;
 import util.IUtils;
 
-public class pnmlParser {
+public class PNMLParser {
 	
 	
 	/*
@@ -45,7 +45,7 @@ public class pnmlParser {
 		
 		String netname = "";
 		try {
-			Scanner sc = new Scanner(f);		
+			Scanner sc = new Scanner(f);
 			while (sc.hasNextLine()) {
 				String line = sc.nextLine();
 				

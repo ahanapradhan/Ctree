@@ -9,7 +9,7 @@ import org.junit.jupiter.api.Test;
 import petrinetmodel.Net;
 import treemodel.Ctree;
 import treemodel.CtreeBuilder;
-import xml2ecws.pnmlParser;
+import xml2ecws.PNMLParser;
 
 public class PNMLtoCtreeTest {
 
@@ -25,7 +25,7 @@ public class PNMLtoCtreeTest {
 	@Test
 	public void test_andnet1_readNNet() {
 		for (String file : TestUtils.PETRINET_XML_FILES) {
-			Net m = pnmlParser.readPIPExmlFile(TestUtils.INPUT_NETS_DIR + file);
+			Net m = PNMLParser.readPIPExmlFile(TestUtils.INPUT_NETS_DIR + file);
 			String nettext = m.printNetForDot();
 			File f = new File(TestUtils.netdotfile);
 			TestUtils.createSampleDotFile(f, nettext);
@@ -36,7 +36,7 @@ public class PNMLtoCtreeTest {
 			String ecws = m.getECWS();
 			System.out.println(ecws);
 
-			Ctree tree = CtreeBuilder.buildCtree(ecws);
+			Ctree tree = CtreeBuilder.buildCtree(ecws, m.getName());
 
 			String intext = tree.printCtreeForDot();
 

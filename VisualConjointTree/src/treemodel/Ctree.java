@@ -1,7 +1,6 @@
 package treemodel;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -22,23 +21,24 @@ public class Ctree {
 	}
 
 	public Ctree(Ctree c) {
-		label = "Copy";
-		Set<AbstractTreeNode> ns = new HashSet<AbstractTreeNode>();
+		label = "Copy of " + c.label;
+		nodes = new HashSet<AbstractTreeNode>();
 		for (AbstractTreeNode n : c.nodes) {
 			if (n instanceof CNode) {
 				CNode cn = new CNode((CNode) n);
-				ns.add(cn);
+				nodes.add(cn);
+				if (cn.getId() == c.root.getId()) {
+					root = cn;
+				}
 			} else {
 				ANode an = new ANode((ANode) n);
-				ns.add(an);
+				nodes.add(an);
 			}
 		}
-		nodes = new HashSet<AbstractTreeNode>(ns);
-		root = new CNode(c.root);
 	}
 
 	public void setName(String n) {
-		label = n;
+		label = "C-tree of " + n;
 	}
 
 	public CNode getRoot() {
@@ -156,15 +156,15 @@ public class Ctree {
 		// clear the line of ancestors
 		
 	}
-	
-	protected void deletePlaces(String[] ps) {
+
+	protected void deletePlaces(Set<String> ps) {
 		for (AbstractTreeNode n : nodes) {
 			if (n instanceof CNode) {
 				CNode cn = (CNode) n;
-				cn.removePlaces(new HashSet<String>(Arrays.asList(ps)));
+				cn.removePlaces(ps);
 			}
 		}
-		root.removePlaces(new HashSet<String>(Arrays.asList(ps)));
+		root.removePlaces(ps);
 	}
 	
 	protected boolean isDysfunctionalTree() {
@@ -189,8 +189,8 @@ public class Ctree {
 		}
 		return rootempty && reachLeaf;
 	}
-	
-	protected boolean isBreakOffSet(String[] ps) {
+
+	protected boolean isBreakOffSet(Set<String> ps) {
 		deletePlaces(ps);
 		return isDysfunctionalTree();
 	}
@@ -234,8 +234,7 @@ public class Ctree {
 		Set<AbstractTreeNode> smallAnds = smtree.getChildren(small);
 		if (bigAnds == null) {
 			return (smallAnds == null ? true : false);
-		}
-		else {
+		} else {
 			if (smallAnds == null) {
 				return true;
 			}

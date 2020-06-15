@@ -9,7 +9,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import test.TestUtils;
-import xml2ecws.pnmlParser;
+import xml2ecws.PNMLParser;
 
 class NetTest {
 	@BeforeEach
@@ -22,7 +22,7 @@ class NetTest {
 
 	@Test
 	void test() {
-		Net m = pnmlParser.readPIPExmlFile(TestUtils.INPUT_NETS_DIR + TestUtils.PETRINET_XML_FILES[0]);
+		Net m = PNMLParser.readPIPExmlFile(TestUtils.INPUT_NETS_DIR + TestUtils.PETRINET_XML_FILES[0]);
 		int i = m.getPlaces().size();
 		assertEquals(i, 6);
 

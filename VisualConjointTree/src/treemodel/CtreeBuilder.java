@@ -6,10 +6,11 @@ import java.util.List;
 public class CtreeBuilder {
 
 	
-	public static Ctree buildCtree(String ecws) {
+	public static Ctree buildCtree(String ecws, String name) {
 
 		String[] items = ecws.split(" ");
 		Ctree tree = new Ctree();
+		tree.setName(name);
 		List<Object> list = buildPackets(items);
 
 		AbstractTreeNode currentNode = null, parentNode = null, andNode = null;

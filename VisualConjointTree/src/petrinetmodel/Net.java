@@ -16,7 +16,11 @@ public class Net {
 	public void setName(String n) {
 		name = n;
 	}
-	
+
+	public String getName() {
+		return name;
+	}
+
 	public Set<Place> getPlaces() {
 		if (ps == null || places.size() != ps.size()) {
 		    ps = new HashSet<Place>();
@@ -54,8 +58,8 @@ public class Net {
 	
 	public String printNetForDot() {
 		StringBuilder sb = new StringBuilder();
-		//sb.append("\n```dot\n");
-	    sb.append("digraph N {\n");
+		// sb.append("\n```dot\n");
+		sb.append("digraph N {\n    label=\"" + name + "\";\n");
 		sb.append("    rankdir=\"LR\";\n");
 		sb.append("    subgraph place {\n");
 		sb.append("    graph [shape=circle];\n");
@@ -77,7 +81,37 @@ public class Net {
 		//sb.append("```\n");
 		return sb.toString();
 	}
-	
+
+	public String printNetForDot(Set<String> cr) {
+		StringBuilder sb = new StringBuilder();
+		// sb.append("\n```dot\n");
+		sb.append("digraph N {\n    label=\"" + name + "\";\n");
+		sb.append("    rankdir=\"LR\";\n");
+		sb.append("    subgraph place {\n");
+		sb.append("    graph [shape=circle];\n");
+		sb.append("    node [shape=circle,fixedsize=true,width=0.7, style=filled, color=darkseagreen2];\n");
+		for (Place p : ps) {
+			sb.append("    " + p.getLabel());
+			if (cr.contains(p.getLabel())) {
+				sb.append(" [color=crimson]");
+			}
+			sb.append(";\n");
+		}
+		sb.append("    }\n");
+		sb.append("    subgraph transitions {\n");
+		sb.append("    node [shape=rect,height=0.7,width=0.2, style=filled,color=\".7 .3 1.0\"];\n");
+		for (Transition t : ts) {
+			sb.append("    " + t.getLabel() + ";\n");
+		}
+		sb.append("    }\n");
+		for (Arc a : arcs) {
+			sb.append("    \"" + a.getInNode().getLabel() + "\" -> \"" + a.getOutNode().getLabel() + "\";\n");
+		}
+		sb.append("}\n");
+		// sb.append("```\n");
+		return sb.toString();
+	}
+
 	public String getECWS() {
 		StringBuilder sb = new StringBuilder();
 		

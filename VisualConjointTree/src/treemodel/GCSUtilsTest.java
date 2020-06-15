@@ -7,6 +7,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -17,7 +19,7 @@ import org.junit.jupiter.api.Test;
 
 import petrinetmodel.Net;
 import test.TestUtils;
-import xml2ecws.pnmlParser;
+import xml2ecws.PNMLParser;
 
 class GCSUtilsTest {
 	static String netdotfile = "digraph.dot";
@@ -44,9 +46,9 @@ class GCSUtilsTest {
 	
 	@Test
 	public void test_breakoffSetTest() {
-		Net m = pnmlParser.readPIPExmlFile(TestUtils.INPUT_NETS_DIR + TestUtils.PETRINET_XML_FILES[6]);
+		Net m = PNMLParser.readPIPExmlFile(TestUtils.INPUT_NETS_DIR + TestUtils.PETRINET_XML_FILES[6]);
 		String ecws = m.getECWS();
-		Ctree tree = CtreeBuilder.buildCtree(ecws);
+		Ctree tree = CtreeBuilder.buildCtree(ecws, m.getName());
 		tree.setName("Net1");
 
 		ProcessBuilder pb = new ProcessBuilder();
@@ -60,16 +62,21 @@ class GCSUtilsTest {
 
 		tree.setName("Net1");
 		Ctree tree1 = new Ctree(tree);
+		String[] a1 = { "p14", "p15", "p8", "p10", "p6", "p2", "p11", "p0", "p25", "p5" };
 		assertTrue(GCSUtils.isBreakOffSet(tree1,
-				new String[] { "p14", "p15", "p8", "p10", "p6", "p2", "p11", "p0", "p25", "p5" }));
+				new HashSet<>(Arrays.asList(a1)) ));
 		Ctree tree2 = new Ctree(tree);
-		assertTrue(GCSUtils.isBreakOffSet(tree2, new String[] { "p22", "p21", "p11", "p0", "p25", "p5" }));
+		
+		String[] a2 = { "p22", "p21", "p11", "p0", "p25", "p5" };
+		assertTrue(GCSUtils.isBreakOffSet(tree2, new HashSet<>(Arrays.asList(a2))));
 		Ctree tree3 = new Ctree(tree);
+		String[] a3 = { "p15", "p8", "p10", "p6", "p2", "p11", "p0", "p25", "p5" };
 		assertFalse(GCSUtils.isBreakOffSet(tree3,
-				new String[] { "p15", "p8", "p10", "p6", "p2", "p11", "p0", "p25", "p5" }));
+				new HashSet<>(Arrays.asList(a3))));
 		Ctree tree4 = new Ctree(tree);
+		String[] a4 = { "p7", "p9", "p6", "p2", "p11", "p0", "p25", "p5", "p12" };
 		assertTrue(GCSUtils.isBreakOffSet(tree4,
-				new String[] { "p7", "p9", "p6", "p2", "p11", "p0", "p25", "p5", "p12" }));
+				new HashSet<>(Arrays.asList(a4)) ));
 	}
 	
 	@Ignore
@@ -93,7 +100,7 @@ class GCSUtilsTest {
 	@Test
 	public void testBuildCtreeV2_doubleNesting_all() {
 		
-		Net m = pnmlParser.readPIPExmlFile(TestUtils.INPUT_NETS_DIR + TestUtils.PETRINET_XML_FILES[6]);
+		Net m = PNMLParser.readPIPExmlFile(TestUtils.INPUT_NETS_DIR + TestUtils.PETRINET_XML_FILES[6]);
 		String nettext = m.printNetForDot();
 		File f = new File(netdotfile);
 		TestUtils.createSampleDotFile(f, nettext);
@@ -105,7 +112,7 @@ class GCSUtilsTest {
 		String ecws = m.getECWS();
 		System.out.println(ecws);
 
-		Ctree tree = CtreeBuilder.buildCtree(ecws);
+		Ctree tree = CtreeBuilder.buildCtree(ecws, m.getName());
 		
 		tree.setName("Net1");
 		String intext = tree.printCtreeForDot();
@@ -147,7 +154,7 @@ class GCSUtilsTest {
 	
 	@Test
 	public void test_deletePlacesFromCtree() {
-		Net m = pnmlParser.readPIPExmlFile(TestUtils.INPUT_NETS_DIR + TestUtils.PETRINET_XML_FILES[3]);
+		Net m = PNMLParser.readPIPExmlFile(TestUtils.INPUT_NETS_DIR + TestUtils.PETRINET_XML_FILES[3]);
 		String nettext = m.printNetForDot();
 		File f = new File(netdotfile);
 		TestUtils.createSampleDotFile(f, nettext);
@@ -159,7 +166,7 @@ class GCSUtilsTest {
 		String ecws = m.getECWS();
 		System.out.println(ecws);
 
-		Ctree tree = CtreeBuilder.buildCtree(ecws);
+		Ctree tree = CtreeBuilder.buildCtree(ecws, m.getName());
 		
 		tree.setName("Net1");
 		String intext = tree.printCtreeForDot();
@@ -170,7 +177,8 @@ class GCSUtilsTest {
 		TestUtils.runDot(TestUtils.dotFile, pb, TestUtils.outputFile);
         TestUtils.showDotGraphMac(pb, TestUtils.outputFile);
         
-        GCSUtils.deletePlacesFrom(tree, new String[]{"p14", "p16", "p12", "p6", "p9", "p2", "p3", "p0", "p11", "p5"});
+        String[] a = {"p14", "p16", "p12", "p6", "p9", "p2", "p3", "p0", "p11", "p5"};
+        GCSUtils.deletePlacesFrom(tree, new HashSet<>(Arrays.asList(a)));
         intext = tree.printCtreeForDot();
 
 

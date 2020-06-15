@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 import org.junit.jupiter.api.AfterEach;
@@ -13,7 +14,8 @@ import org.junit.jupiter.api.Test;
 
 import petrinetmodel.Net;
 import test.TestUtils;
-import xml2ecws.pnmlParser;
+import xml2ecws.PNMLParser;
+import xml2ecws.PSCR;
 
 public class MPEcheckTest {
 	final static String bigdot = "big.dot";
@@ -63,38 +65,69 @@ public class MPEcheckTest {
 			String imgfile, 
 			String ctdot, 
 			String ctimg,
-			String finaldot,
-			String finalimg) {
+			Set<String> cr,
+			String netname) {
 		ProcessBuilder pb = new ProcessBuilder();
 		
-		Net m = pnmlParser.readPIPExmlFile(TestUtils.INPUT_NETS_DIR + xmlfile);
-		String intext = m.printNetForDot();
+		Net m = PNMLParser.readPIPExmlFile(TestUtils.INPUT_NETS_DIR + xmlfile);
+		m.setName(netname);
+		String intext = "";
+		if (cr != null) {
+		  intext = m.printNetForDot(cr);
+		}
+		else {
+			intext = m.printNetForDot();
+		}
+			
 		File f = new File(dotfile);
 		TestUtils.createSampleDotFile(f, intext);
 		TestUtils.runDot(dotfile, pb, imgfile);
 		
 
 		String ecws = m.getECWS();
-		Ctree tree = CtreeBuilder.buildCtree(ecws);
+		Ctree tree = CtreeBuilder.buildCtree(ecws, m.getName());
 		intext = tree.printCtreeForDot();
 		f = new File(ctdot);
 		TestUtils.createSampleDotFile(f, intext);
 		TestUtils.runDot(ctdot, pb, ctimg);
 		
-		f = new File(finaldot);
-		String two = TestUtils.createTwoImageDot(imgfile, ctimg);
-		TestUtils.createSampleDotFile(f, two);
-		pb = new ProcessBuilder();
-		TestUtils.runDot(finaldot, pb, finalimg);
-		TestUtils.showDotGraphMac(pb, finalimg);
+	}
+	
+	public static void createAllImageDot(
+			String img1, 
+			String img2, 
+			String img3, 
+			String img4) {
+		ProcessBuilder pb = new ProcessBuilder();
+		String text1 = TestUtils.createTwoImageDot(img1, img2);
+		File f1 = new File("dotupdwn.dot");
+		TestUtils.createSampleDotFile(f1, text1);
+		System.out.println(text1);
+		TestUtils.runDot("dotupdwn.dot", pb, "updown.png");
+				
+		String text2 = "graph {\n"
+				+ "    rankdir = LR\n"
+				+ "    node [shape=none,label=\" \"]\n" 
+							+ "    d1 [image=\"" + img3 + "\"]\n"
+							+ "    d2 [image=\"" + img4 + "\"]\n" 
+							+ "    edge [style=invis]\n" 
+							+ "    d1--d2\n" + "}\n";
+		File f2 = new File("dotsidebyside.dot");
+		TestUtils.createSampleDotFile(f2, text2);
+		TestUtils.runDot("dotsidebyside.dot", pb, "sidebyside.png");
 		
+		String merged = TestUtils.createTwoImageDot("updown.png", "sidebyside.png");
+		f1 = new File(bigfinaldot);
+		TestUtils.createSampleDotFile(f1, merged);
+		TestUtils.runDot(bigfinaldot, pb, bigfinalimg);
+		TestUtils.showDotGraphMac(pb, bigfinalimg);
 	}
 	
 	private void check_MPE_bothways(String bignet, String smallnet) {
-		Net big = pnmlParser.readPIPExmlFile(TestUtils.INPUT_NETS_DIR + bignet);
-		Ctree bt = CtreeBuilder.buildCtree(big.getECWS());
-		Net small = pnmlParser.readPIPExmlFile(TestUtils.INPUT_NETS_DIR + smallnet);
-		Ctree st = CtreeBuilder.buildCtree(small.getECWS());
+		Net big = PNMLParser.readPIPExmlFile(TestUtils.INPUT_NETS_DIR + bignet);
+		Ctree bt = CtreeBuilder.buildCtree(big.getECWS(), big.getName());
+		Net small = PNMLParser.readPIPExmlFile(TestUtils.INPUT_NETS_DIR + smallnet);
+		Ctree st = CtreeBuilder.buildCtree(small.getECWS(), small.getName());
 		assertTrue(GCSUtils.doesHaveMPE(st, bt));
 		assertFalse(GCSUtils.doesHaveMPE(bt, st));
 		assertTrue(GCSUtils.doesHaveMPE(st, st));
@@ -102,10 +135,10 @@ public class MPEcheckTest {
 	}
 	
 	private void check_noMPE_bothways(String bignet, String smallnet) {
-		Net big = pnmlParser.readPIPExmlFile(TestUtils.INPUT_NETS_DIR + bignet);
-		Ctree bt = CtreeBuilder.buildCtree(big.getECWS());
-		Net small = pnmlParser.readPIPExmlFile(TestUtils.INPUT_NETS_DIR + smallnet);
-		Ctree st = CtreeBuilder.buildCtree(small.getECWS());
+		Net big = PNMLParser.readPIPExmlFile(TestUtils.INPUT_NETS_DIR + bignet);
+		Ctree bt = CtreeBuilder.buildCtree(big.getECWS(), big.getName());
+		Net small = PNMLParser.readPIPExmlFile(TestUtils.INPUT_NETS_DIR + smallnet);
+		Ctree st = CtreeBuilder.buildCtree(small.getECWS(), small.getName());
 		assertFalse(GCSUtils.doesHaveMPE(st, bt));
 		assertFalse(GCSUtils.doesHaveMPE(bt, st));
 	}
@@ -122,8 +155,18 @@ public class MPEcheckTest {
 	@Test
 	public void test_MPEtest2() {
 		String[] twonets = {"big3.xml", "small2.xml"};
-		createNetAndCtreeImg(twonets[0], bigdot, bigimg, bigctdot, bigctimg, bigfinaldot, bigfinalimg);
-		createNetAndCtreeImg(twonets[1], smalldot, smallimg, smallctdot, smallctimg, smallfinaldot, smallfinalimg);
+		//createNetAndCtreeImg(twonets[0], bigdot, bigimg, bigctdot, bigctimg, bigfinaldot, bigfinalimg);
+		//createNetAndCtreeImg(twonets[1], smalldot, smallimg, smallctdot, smallctimg, smallfinaldot, smallfinalimg);
 		check_noMPE_bothways(twonets[0], twonets[1]);
+	}
+	
+	@Test
+	public void test_PSCRtest() {
+		String[] twonets = {"andnet55.xml", "andnet5.xml"};
+		Set<String> pscr = PSCR.getPSCR(TestUtils.INPUT_NETS_DIR + twonets[0], TestUtils.INPUT_NETS_DIR + twonets[1]);
+		createNetAndCtreeImg(twonets[1], bigdot, bigimg, bigctdot, bigctimg, null, "New Net");
+		createNetAndCtreeImg(twonets[0], smalldot, smallimg, smallctdot, smallctimg, pscr, "Old Net");
+		createAllImageDot(bigimg, smallimg, bigctimg, smallctimg);
+
 	}
 }
