@@ -9,25 +9,25 @@ import util.IUtils;
 
 public class NetFolder {
 
-	public static Net fold(Net n, Place p) {
+	public static Net foldLabelOfPlace(Net n, Place p) {
 		Net m = new Net(n);
 		Set<Place> ps = m.getPlaces();
 		for (Place e : ps) {
 			if (e.getLabel().equals(p.getLabel())) {
 				FoldedPlace ep = new FoldedPlace(e);
-				ep.getFolding();
+				ep.getFoldedLabel();
 			}
 		}
 		return m;
 	}
 	
-	public static Net foldWholeNet(Net n) {
+	public static Net foldLabelOfSourcePlace(Net n) {
 		Net m = new Net(n);
 		Set<Place> ps = m.getPlaces();
 		for (Place e : ps) {
 			if (e.howManyInArcs() == IUtils.ZERO) { // source place
 				FoldedPlace ep = new FoldedPlace(e);
-				ep.getFolding();
+				ep.getFoldedLabel();
 			}
 		}
 		return m;

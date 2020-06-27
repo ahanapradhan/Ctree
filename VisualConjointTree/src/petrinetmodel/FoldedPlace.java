@@ -1,22 +1,19 @@
 package petrinetmodel;
 
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
-
 import util.IUtils;
+import util.StringUtils;
 
 public class FoldedPlace {
 	private Place p;
 
-	boolean isFolded = false;
+	boolean hasFoldedLabel = false;
 
 	public FoldedPlace(Place p) {
 		this.p = p;
 	}
 
-	public String getFolding() {
-		if (!isFolded) {
+	public String getFoldedLabel() {
+		if (!hasFoldedLabel) {
 			buildFoldedLabel();
 		}
 		return p.getLabel();
@@ -32,26 +29,13 @@ public class FoldedPlace {
 				if (postt.isItOneInOneOut()) {
 					Place fp = (Place) postt.getOutArcs().get(IUtils.FIRST_INDEX).getOutNode();
 					FoldedPlace fpp = new FoldedPlace(fp);
-					String plabel = fpp.getFolding();
+					String plabel = fpp.getFoldedLabel();
 					sb.append("," + plabel);
 				}
 			}
 		}
-		isFolded = true;
-		sb = removeDuplicates(sb);
+		hasFoldedLabel = true;
+		sb = StringUtils.removeDuplicates(sb);
 		p.setLabel(sb.toString());
-	}
-
-	private StringBuilder removeDuplicates(StringBuilder sb) {
-		String newLabel = sb.toString();
-		String[] places = newLabel.split(",");
-		Set<String> uniqPlaces = new HashSet<String>(Arrays.asList(places));
-		sb = new StringBuilder();
-		String prefix = "";
-		for(String s : uniqPlaces) {
-			sb.append(prefix+s);
-			prefix = ",";
-		}
-		return sb;
 	}
 }
