@@ -1,5 +1,7 @@
 package petrinetmodel;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -12,6 +14,56 @@ public class Net {
 	Set<Transition> ts = null;
 	List<Arc> arcs = null;
 	String name;
+
+	public Net(Net other) { 
+		name = other.getName();		
+		places = new HashMap<String,Place>();
+		transitions = new HashMap<String, Transition>();
+		ps = new HashSet<Place>();
+		ts = new HashSet<Transition>();
+		arcs = new ArrayList<Arc>();
+		
+		for (Place otherp : other.ps) {
+			Place myp = new Place(otherp.getLabel());
+			places.put(otherp.getLabel(), myp);
+			ps.add(myp);
+		}
+		
+		for (Transition othert : other.ts) {
+			Transition myt = new Transition(othert.getLabel());
+			transitions.put(othert.getLabel(),myt);
+			ts.add(myt);
+		}
+		
+		for (Arc othera : other.arcs) {
+			Place myp;
+			Transition myt;
+			String src = othera.getInNode().getLabel();
+			String trg = othera.getOutNode().getLabel();
+			Arc mya = null;
+			if (places.containsKey(src) && transitions.containsKey(trg)) {
+				myp = places.get(src);
+				myt = transitions.get(trg);
+				mya = new Arc(myp,myt);
+				myp.addOutArc(mya);
+				myt.addInArc(mya);
+			} 
+			else if (places.containsKey(trg) && transitions.containsKey(src)) {
+				myp = places.get(trg);
+				myt = transitions.get(src);
+				mya = new Arc(myt,myp);
+				myt.addOutArc(mya);
+				myp.addInArc(mya);
+			}
+			if (mya !=  null) { // may be null check not needed if everything is proper
+				arcs.add(mya);
+			}			
+		}
+	}
+	
+	public Net()
+	{		
+	}
 	
 	public void setName(String n) {
 		name = n;

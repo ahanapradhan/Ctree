@@ -10,8 +10,8 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import parser.CtreeBuilderByECWS;
 import treemodel.Ctree;
-import treemodel.CtreeBuilder;
 import treemodel.GCSUtils;
 
 class VisCtreeBuilderTest {
@@ -28,7 +28,7 @@ class VisCtreeBuilderTest {
 	
 	@Test
 	public void testBuildCtreeV2_doubleNesting_all() {
-		Ctree tree = CtreeBuilder.buildCtree("p1 t1 \\( p2 t2 \\( p3 t100 \\( p90 \\) "
+		Ctree tree = CtreeBuilderByECWS.buildCtree("p1 t1 \\( p2 t2 \\( p3 t100 \\( p90 \\) "
 				+ "\\( p91 \\) t200 p100 \\) \\( p4 \\) t3 p5 \\) "
 				+ "\\( p16 t121 \\{ p21 t22 p33 t31 p44 \\} \\{ t45 p51 t51 \\} "
 				+ "t60 p66 \\) t6 p7 t333 \\( p990 \\) \\( p991 \\) \\( p1010 \\) t334 p98", "sample-net1");
@@ -59,7 +59,7 @@ class VisCtreeBuilderTest {
 	@Test
 	public void test_checkCtree_twoPlusNesting_Test1() {
 
-		Ctree tree = CtreeBuilder
+		Ctree tree = CtreeBuilderByECWS
 				.buildCtree("p1 t1 p2 t2 \\( p100 t100 p200 \\) \\( p3 t3 p4 t4 p5 \\) \\( p6 t5 p7 \\) t6 p8 t7 p9", "sample-net2");
 		assertEquals(tree.howManyNodes(), 5);
 		assertTrue("p1p2p8p9".equals(tree.getRoot().getLabel()));
@@ -80,7 +80,7 @@ class VisCtreeBuilderTest {
 	@Test
 	public void test_checkCtree_twoPlusNesting_Test2() {
 
-		Ctree tree = CtreeBuilder.buildCtree(
+		Ctree tree = CtreeBuilderByECWS.buildCtree(
 				"p1 t1 p2 t2 \\( p201 t101 p202 \\) \\( p100 t100 p200 \\) \\( p3 t3 p4 t4 p5 \\) \\( p6 t5 p7 \\) t6 p8 t7 p9", "sample-net3");
 		assertEquals(tree.howManyNodes(), 6);
 		assertTrue("p1p2p8p9".equals(tree.getRoot().getLabel()));
@@ -101,7 +101,7 @@ class VisCtreeBuilderTest {
 
 	@Test
 	void testBuildCtreeV2_doubleNesting1() {
-		Ctree tree = CtreeBuilder.buildCtree("p1 t1 \\( p2 t2 \\( p3 \\) \\( p4 \\) t3 p5 \\) \\( p6 \\) t6 p7", "sample-net4");
+		Ctree tree = CtreeBuilderByECWS.buildCtree("p1 t1 \\( p2 t2 \\( p3 \\) \\( p4 \\) t3 p5 \\) \\( p6 \\) t6 p7", "sample-net4");
 		String intext = tree.printCtreeForDot();
 
 		File f = new File(TestUtils.dotFile);
@@ -148,7 +148,7 @@ class VisCtreeBuilderTest {
 		String s = TestUtils.getPackets(
 				"p1 t1 p2 t2 \\( p3 t3 p4 t4 p5 \\) \\( p6 t5 \\( p100 \\) \\( p200 \\) t11 p7 \\) t6 p8 t7 p9");
 		assertTrue("p1p2 \\( p3p4p5 \\)  \\( p6 \\( p100 \\)  \\( p200 \\) p7 \\) p8p9".equals(s));
-		Ctree tree = CtreeBuilder.buildCtree(
+		Ctree tree = CtreeBuilderByECWS.buildCtree(
 				"p1 t1 p2 t2 \\( p3 t3 p4 t4 p5 \\) \\( p6 t5 \\( p100 \\) \\( p200 \\) t11 p7 \\) t6 p8 t7 p9", "sample-net5");
 		assertEquals(tree.howManyNodes(), 7);
 		assertTrue("p1p2p8p9".equals(tree.getRoot().getLabel()));
@@ -159,14 +159,14 @@ class VisCtreeBuilderTest {
 	@Test
 	void test_checkCtree_twoPlusNesting_Test() {
 
-		Ctree tree = CtreeBuilder
+		Ctree tree = CtreeBuilderByECWS
 				.buildCtree("p1 t1 p2 t2 \\( p100 t100 p200 \\) \\( p3 t3 p4 t4 p5 \\) \\( p6 t5 p7 \\) t6 p8 t7 p9", "sample-net6");
 		assertEquals(tree.howManyNodes(), 5);
 		assertTrue("p1p2p8p9".equals(tree.getRoot().getLabel()));
 		assertEquals(tree.getRoot().howManyChildren(), 1);
 		//tree.printCtree();
 
-		tree = CtreeBuilder.buildCtree(
+		tree = CtreeBuilderByECWS.buildCtree(
 				"p1 t1 p2 t2 \\( p201 t101 p202 \\) \\( p100 t100 p200 \\) \\( p3 t3 p4 t4 p5 \\) \\( p6 t5 p7 \\) t6 p8 t7 p9", "sample-net7");
 		assertEquals(tree.howManyNodes(), 6);
 		assertTrue("p1p2p8p9".equals(tree.getRoot().getLabel()));
@@ -176,12 +176,12 @@ class VisCtreeBuilderTest {
 
 	@Test
 	void test_checkCtree_basicTest() {
-		Ctree tree = CtreeBuilder.buildCtree("p1 t1 \\{ p2 t2 p3 t3 p4 \\} \\{ t4 p5 t5 \\} t6 p6", "sample-net");
+		Ctree tree = CtreeBuilderByECWS.buildCtree("p1 t1 \\{ p2 t2 p3 t3 p4 \\} \\{ t4 p5 t5 \\} t6 p6", "sample-net");
 		assertEquals(tree.howManyNodes(), 1);
 		assertTrue("p1p2p3p4p5p6".equals(tree.getRoot().getLabel()));
 		//tree.printCtree();
 
-		tree = CtreeBuilder.buildCtree("p1 t1 p2 t2 \\( p3 t3 p4 t4 p5 \\) \\( p6 t5 p7 \\) t6 p8 t7 p9", "sample-net");
+		tree = CtreeBuilderByECWS.buildCtree("p1 t1 p2 t2 \\( p3 t3 p4 t4 p5 \\) \\( p6 t5 p7 \\) t6 p8 t7 p9", "sample-net");
 		assertEquals(tree.howManyNodes(), 4);
 		assertTrue("p1p2p8p9".equals(tree.getRoot().getLabel()));
 		assertEquals(tree.getRoot().howManyChildren(), 1);
@@ -191,7 +191,7 @@ class VisCtreeBuilderTest {
 	@Test
 	void test_checkCtree_twoPlusNestingSequence_Test() { // two sequential AND -- need to add ANode in Ctree bulding
 
-		Ctree tree = CtreeBuilder.buildCtree(
+		Ctree tree = CtreeBuilderByECWS.buildCtree(
 				"p1 t1 p2 t2 \\( p201 t101 p202 \\) \\( p100 t100 p200 \\) "
 				+ "t9 p119 t10 \\( p3 t3 p4 t4 p5 \\) \\( p6 t5 p7 \\) t6 p8 t7 p9", "sample-net");
 		assertEquals(tree.howManyNodes(), 7);

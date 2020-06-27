@@ -1,4 +1,4 @@
-package xml2ecws;
+package parser;
 
 import java.io.File;
 import java.io.FileNotFoundException;

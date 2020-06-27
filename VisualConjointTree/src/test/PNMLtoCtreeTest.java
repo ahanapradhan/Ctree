@@ -8,8 +8,8 @@ import org.junit.jupiter.api.Test;
 
 import petrinetmodel.Net;
 import treemodel.Ctree;
-import treemodel.CtreeBuilder;
-import xml2ecws.PNMLParser;
+import parser.CtreeBuilderByECWS;
+import parser.PNMLParser;
 
 public class PNMLtoCtreeTest {
 
@@ -36,7 +36,7 @@ public class PNMLtoCtreeTest {
 			String ecws = m.getECWS();
 			System.out.println(ecws);
 
-			Ctree tree = CtreeBuilder.buildCtree(ecws, m.getName());
+			Ctree tree = CtreeBuilderByECWS.buildCtree(ecws, m.getName());
 
 			String intext = tree.printCtreeForDot();
 

@@ -1,11 +1,10 @@
-package xml2ecws;
+package parser;
 
 import java.util.HashSet;
 import java.util.Set;
 
 import petrinetmodel.Net;
 import treemodel.Ctree;
-import treemodel.CtreeBuilder;
 import treemodel.GCSUtils;
 import util.IUtils;
 
@@ -15,8 +14,8 @@ public class PSCR {
 		Net oldnet = PNMLParser.readPIPExmlFile(oldnetfilename);
 		Net newnet = PNMLParser.readPIPExmlFile(newnetfilename);
 
-		Ctree oldtree = CtreeBuilder.buildCtree(oldnet.getECWS(), oldnet.getName());
-		Ctree newtree = CtreeBuilder.buildCtree(newnet.getECWS(), newnet.getName());
+		Ctree oldtree = CtreeBuilderByECWS.buildCtree(oldnet.getECWS(), oldnet.getName());
+		Ctree newtree = CtreeBuilderByECWS.buildCtree(newnet.getECWS(), newnet.getName());
 
 		Set<String> CRr = getRemovalSet(oldtree, newtree);
 		Set<String> CRlc = getLostConcurrencySet(oldtree, newtree);

@@ -21,7 +21,39 @@ public abstract class Node {
 	
 	protected abstract String getFork();
 	protected abstract String getJoin();
-	
+
+	protected boolean isItOneInOneOut() {
+		boolean inyes = false, outyes = false;
+		if (getInArcs() == null) {
+			inyes = inyes || true;
+		} else if (getInArcs().size() == IUtils.ONE) {
+			inyes = inyes || true;
+		}
+
+		if (getOutArcs() == null) {
+			outyes = outyes || true;
+		} else if (getOutArcs().size() == IUtils.ONE) {
+			outyes = outyes || true;
+		}
+		return (inyes && outyes);
+	}
+
+	public int howManyInArcs() {
+		int n = 0;
+		if (inArcs != null) {
+			n = inArcs.size();
+		}
+		return n;
+	}
+
+	public int howManyOutArcs() {
+		int n = 0;
+		if (outArcs != null) {
+			n = outArcs.size();
+		}
+		return n;
+	}
+
 	protected Set<Node> getPreNodes() {
 		if (inArcs != null && preNodes == null) {
 			preNodes = new HashSet<Node>();
@@ -55,13 +87,17 @@ public abstract class Node {
 		}
 		return postNodes;
 	}
-    
-    public String getLabel() {
-    	return label;
-    }
-    
-    public Node(String s) {
-        label = s;
+
+	public String getLabel() {
+		return label;
+	}
+
+	public void setLabel(String s) {
+		label = s;
+	}
+
+	public Node(String s) {
+		label = s;
 		unvisitedInArcs = 0;
     }
     
@@ -99,8 +135,7 @@ public abstract class Node {
 		StringBuilder sb = new StringBuilder();
 		if (inArcs != null) {
 			handleInArcs(sb);
-		}
-		else {
+		} else {
 			sb.append(this.getLabel() + " ");
 		}
 		if (outArcs != null) {
@@ -113,8 +148,7 @@ public abstract class Node {
 		if (unvisitedInArcs == IUtils.ZERO) {
 			if (outArcs.size() == IUtils.ONE) {
 				sb.append(outArcs.get(IUtils.ONLY_INDEX).getOutNode().buildECWS());
-			} 
-			else if (outArcs.size() > IUtils.ONE) {
+			} else if (outArcs.size() > IUtils.ONE) {
 				for (Arc a : outArcs) {
 					sb.append(getFork());
 					sb.append(a.getOutNode().buildECWS());
@@ -127,8 +161,7 @@ public abstract class Node {
 		if (inArcs.size() > IUtils.ONE && unvisitedInArcs > IUtils.ONE) {
 			sb.append(getJoin());
 			unvisitedInArcs--;
-		}
-		else if(inArcs.size() > IUtils.ONE && unvisitedInArcs == IUtils.ONE) {
+		} else if (inArcs.size() > IUtils.ONE && unvisitedInArcs == IUtils.ONE) {
 			sb.append(getJoin() + this.getLabel() + " ");
 			unvisitedInArcs--;
 		}

@@ -14,8 +14,9 @@ import org.junit.jupiter.api.Test;
 
 import petrinetmodel.Net;
 import test.TestUtils;
-import xml2ecws.PNMLParser;
-import xml2ecws.PSCR;
+import parser.CtreeBuilderByECWS;
+import parser.PNMLParser;
+import parser.PSCR;
 
 public class MPEcheckTest {
 	final static String bigdot = "big.dot";
@@ -85,7 +86,7 @@ public class MPEcheckTest {
 		
 
 		String ecws = m.getECWS();
-		Ctree tree = CtreeBuilder.buildCtree(ecws, m.getName());
+		Ctree tree = CtreeBuilderByECWS.buildCtree(ecws, m.getName());
 		intext = tree.printCtreeForDot();
 		f = new File(ctdot);
 		TestUtils.createSampleDotFile(f, intext);
@@ -125,9 +126,9 @@ public class MPEcheckTest {
 	
 	private void check_MPE_bothways(String bignet, String smallnet) {
 		Net big = PNMLParser.readPIPExmlFile(TestUtils.INPUT_NETS_DIR + bignet);
-		Ctree bt = CtreeBuilder.buildCtree(big.getECWS(), big.getName());
+		Ctree bt = CtreeBuilderByECWS.buildCtree(big.getECWS(), big.getName());
 		Net small = PNMLParser.readPIPExmlFile(TestUtils.INPUT_NETS_DIR + smallnet);
-		Ctree st = CtreeBuilder.buildCtree(small.getECWS(), small.getName());
+		Ctree st = CtreeBuilderByECWS.buildCtree(small.getECWS(), small.getName());
 		assertTrue(GCSUtils.doesHaveMPE(st, bt));
 		assertFalse(GCSUtils.doesHaveMPE(bt, st));
 		assertTrue(GCSUtils.doesHaveMPE(st, st));
@@ -136,9 +137,9 @@ public class MPEcheckTest {
 	
 	private void check_noMPE_bothways(String bignet, String smallnet) {
 		Net big = PNMLParser.readPIPExmlFile(TestUtils.INPUT_NETS_DIR + bignet);
-		Ctree bt = CtreeBuilder.buildCtree(big.getECWS(), big.getName());
+		Ctree bt = CtreeBuilderByECWS.buildCtree(big.getECWS(), big.getName());
 		Net small = PNMLParser.readPIPExmlFile(TestUtils.INPUT_NETS_DIR + smallnet);
-		Ctree st = CtreeBuilder.buildCtree(small.getECWS(), small.getName());
+		Ctree st = CtreeBuilderByECWS.buildCtree(small.getECWS(), small.getName());
 		assertFalse(GCSUtils.doesHaveMPE(st, bt));
 		assertFalse(GCSUtils.doesHaveMPE(bt, st));
 	}

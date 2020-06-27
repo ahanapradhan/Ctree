@@ -9,7 +9,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import petrinetmodel.Net;
-import xml2ecws.PNMLParser;
+import parser.PNMLParser;
 
 public class PNMLParserTest {
 	static String dotFile = "digraph.dot";

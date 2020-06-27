@@ -1,9 +1,14 @@
-package treemodel;
+package parser;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class CtreeBuilder {
+import treemodel.ANode;
+import treemodel.AbstractTreeNode;
+import treemodel.CNode;
+import treemodel.Ctree;
+
+public class CtreeBuilderByECWS {
 
 	
 	public static Ctree buildCtree(String ecws, String name) {

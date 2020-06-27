@@ -19,7 +19,8 @@ import org.junit.jupiter.api.Test;
 
 import petrinetmodel.Net;
 import test.TestUtils;
-import xml2ecws.PNMLParser;
+import parser.CtreeBuilderByECWS;
+import parser.PNMLParser;
 
 class GCSUtilsTest {
 	static String netdotfile = "digraph.dot";
@@ -48,7 +49,7 @@ class GCSUtilsTest {
 	public void test_breakoffSetTest() {
 		Net m = PNMLParser.readPIPExmlFile(TestUtils.INPUT_NETS_DIR + TestUtils.PETRINET_XML_FILES[6]);
 		String ecws = m.getECWS();
-		Ctree tree = CtreeBuilder.buildCtree(ecws, m.getName());
+		Ctree tree = CtreeBuilderByECWS.buildCtree(ecws, m.getName());
 		tree.setName("Net1");
 
 		ProcessBuilder pb = new ProcessBuilder();
@@ -112,7 +113,7 @@ class GCSUtilsTest {
 		String ecws = m.getECWS();
 		System.out.println(ecws);
 
-		Ctree tree = CtreeBuilder.buildCtree(ecws, m.getName());
+		Ctree tree = CtreeBuilderByECWS.buildCtree(ecws, m.getName());
 		
 		tree.setName("Net1");
 		String intext = tree.printCtreeForDot();
@@ -166,7 +167,7 @@ class GCSUtilsTest {
 		String ecws = m.getECWS();
 		System.out.println(ecws);
 
-		Ctree tree = CtreeBuilder.buildCtree(ecws, m.getName());
+		Ctree tree = CtreeBuilderByECWS.buildCtree(ecws, m.getName());
 		
 		tree.setName("Net1");
 		String intext = tree.printCtreeForDot();
