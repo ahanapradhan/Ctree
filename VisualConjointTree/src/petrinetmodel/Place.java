@@ -4,9 +4,6 @@ import util.IUtils;
 
 public class Place extends Node {
 
-	boolean loopCheck = false;
-	boolean hasLoopArc = false;
-
 	public Place(String s) {
 		super(s.toLowerCase());
 	}
