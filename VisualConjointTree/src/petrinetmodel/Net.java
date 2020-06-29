@@ -47,8 +47,7 @@ public class Net {
 				mya = new Arc(myp,myt);
 				myp.addOutArc(mya);
 				myt.addInArc(mya);
-			} 
-			else if (places.containsKey(trg) && transitions.containsKey(src)) {
+			} else if (places.containsKey(trg) && transitions.containsKey(src)) {
 				myp = places.get(trg);
 				myt = transitions.get(src);
 				mya = new Arc(myt,myp);
@@ -60,11 +59,44 @@ public class Net {
 			}			
 		}
 	}
-	
-	public Net()
-	{		
+
+	public void addPlace(Place p) {
+		places.put(p.getLabel(), p);
+		ps.add(p);
+		if (p.getInArcs() != null) {
+			arcs.addAll(p.getInArcs());
+		}
+		if (p.getOutArcs() != null) {
+			arcs.addAll(p.getOutArcs());
+		}
 	}
-	
+
+	public void removePlace(Place p) {
+		places.remove(p.getLabel());
+		ps.remove(p);
+		List<Arc> arcstoremove = new ArrayList<Arc>();
+		String plabel = p.getLabel();
+		for (int i = 0; i < arcs.size(); i++) {
+			Arc a = arcs.get(i);
+			String inlabel = null, outlabel = null;
+			if (a.getInNode() != null) {
+				inlabel = a.getInNode().getLabel();
+			}
+			if (a.getOutNode() != null) {
+				outlabel = a.getOutNode().getLabel();
+			}
+			if (plabel.equals(inlabel) || plabel.equals(outlabel)) {
+				arcstoremove.add(arcs.get(i));
+			}
+		}
+		for (Arc a : arcstoremove) {
+			arcs.remove(a);
+		}
+	}
+
+	public Net() {
+	}
+
 	public void setName(String n) {
 		name = n;
 	}

@@ -26,5 +26,9 @@ public class Arc {
 		in = i;
 		out = o;
 	}
+	
+	public void setInNode(Node i) {
+		in = i;
+	}
 
 }

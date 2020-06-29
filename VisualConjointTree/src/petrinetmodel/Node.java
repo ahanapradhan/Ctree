@@ -109,6 +109,13 @@ public abstract class Node {
     	unvisitedInArcs++;
     }
     
+    public void removeOutArc(Arc a) {
+    	if(outArcs != null) {
+    		outArcs.remove(a);
+    	}
+    	postNodes = null; // have to rebuild on next call
+    }
+    
     public void addOutArc(Arc a) {
     	if (outArcs == null) {
     		outArcs = new ArrayList<Arc>();

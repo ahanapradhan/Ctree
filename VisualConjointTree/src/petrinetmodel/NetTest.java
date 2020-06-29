@@ -35,9 +35,71 @@ class NetTest {
 	}
 	
 	@Test
+	void test_netfolder_test6() {
+		Net m = PNMLParser.readPIPExmlFile(TestUtils.INPUT_NETS_DIR + TestUtils.PETRINETS_FOR_DIRECT_CTREE[2]);
+		Net m1 = new Net(m);
+		
+		NetFolder.foldSeqPlaces(m1);
+		Set<Place> ps = m1.getPlaces();
+		for (Place p : ps) {
+			if (p.howManyInArcs() == IUtils.ZERO) {
+				assertTrue("p0,p1,p2,p3,p4,p5,p6".equals(p.getLabel()));
+				break;
+			}
+		}
+	}
+	
+	@Test
+	void test_netfolder_test5() {
+		Net m = PNMLParser.readPIPExmlFile(TestUtils.INPUT_NETS_DIR + TestUtils.PETRINETS_FOR_DIRECT_CTREE[1]);
+		Net m1 = new Net(m);
+		
+		NetFolder.foldSeqPlaces(m1);
+		Set<Place> ps = m1.getPlaces();
+		for (Place p : ps) {
+			if (p.howManyInArcs() == IUtils.ZERO) {
+				assertTrue("p0,p1,p2,p3,p4,p5".equals(p.getLabel()));
+				break;
+			}
+		}
+	}
+	
+	@Test
+	void test_netfolder_test4() {
+		Net m = PNMLParser.readPIPExmlFile(TestUtils.INPUT_NETS_DIR + TestUtils.PETRINETS_FOR_DIRECT_CTREE[0]);
+		Net m1 = new Net(m);
+		Set<Place> ps = m1.getPlaces();
+		String flabel = "";
+		for (Place p : ps) {
+			if (p.howManyInArcs() == IUtils.ZERO) {
+				NetFolder.foldPlace(m1, p);
+				assertTrue("p0,p1".equals(p.getLabel()));
+				break;
+			}
+		}
+		
+		NetFolder.foldSeqPlaces(m1);
+		ps = m1.getPlaces();
+		for (Place p : ps) {
+			if (p.howManyInArcs() == IUtils.ZERO) {
+				assertTrue("p0,p1,p2,p3,p4".equals(p.getLabel()));
+				break;
+			}
+		}
+
+		ps = m.getPlaces();
+		for (Place p : ps) {
+			if (p.howManyInArcs() == IUtils.ZERO) {
+				flabel = p.getLabel();
+				assertTrue("p0".equals(flabel));
+			}
+		}
+	}
+	
+	@Test
 	void test_netfolder_test3() {
 		Net m = PNMLParser.readPIPExmlFile(TestUtils.INPUT_NETS_DIR + TestUtils.PETRINETS_FOR_DIRECT_CTREE[2]);
-		Net m1 = NetFolder.foldWholeNet(m);
+		Net m1 = NetFolder.foldLabelOfSourcePlace(m);
 		Set<Place> ps = m1.getPlaces();
 		String flabel = "";
 		for (Place p : ps) {
@@ -59,7 +121,7 @@ class NetTest {
 	@Test
 	void test_netfolder_test2() {
 		Net m = PNMLParser.readPIPExmlFile(TestUtils.INPUT_NETS_DIR + TestUtils.PETRINETS_FOR_DIRECT_CTREE[1]);
-		Net m1 = NetFolder.foldWholeNet(m);
+		Net m1 = NetFolder.foldLabelOfSourcePlace(m);
 		Set<Place> ps = m1.getPlaces();
 		String flabel = "";
 		for (Place p : ps) {
@@ -81,7 +143,7 @@ class NetTest {
 	@Test
 	void test_netfolder_test1() {
 		Net m = PNMLParser.readPIPExmlFile(TestUtils.INPUT_NETS_DIR + TestUtils.PETRINET_XML_FILES[7]);
-		Net m1 = NetFolder.foldWholeNet(m);
+		Net m1 = NetFolder.foldLabelOfSourcePlace(m);
 		Set<Place> ps = m1.getPlaces();
 		String flabel = "";
 		for (Place p : ps) {

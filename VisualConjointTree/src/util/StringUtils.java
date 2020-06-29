@@ -32,4 +32,15 @@ public class StringUtils {
 		return sb;
 	}
 
+	public static String removeDuplicates(String s) {
+		String[] places = s.split(",");
+		Set<String> uniqPlaces = new HashSet<String>(Arrays.asList(places));
+		StringBuilder  sb = new StringBuilder();
+		String prefix = "";
+		for(String p : uniqPlaces) {
+			sb.append(prefix+p);
+			prefix = ",";
+		}
+		return sb.toString();
+	}
 }
