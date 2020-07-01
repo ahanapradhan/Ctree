@@ -13,6 +13,7 @@ import java.util.concurrent.TimeUnit;
 import org.junit.jupiter.api.Test;
 
 import parser.CtreeBuilderByECWS;
+import petrinetmodel.Net;
 import treemodel.CNode;
 
 public class TestUtils {
@@ -23,7 +24,8 @@ public class TestUtils {
 	public final static String[] PETRINET_XML_FILES = { "andnet1.xml", "andnet2.xml", "andnet3.xml", "andnet4.xml",
 			"andxor1.xml", "andxor2.xml", "andnet5.xml", "seq1.xml"};
 	
-	public final static String[] PETRINETS_FOR_DIRECT_CTREE = {"seq1.xml", "xorctree1.xml", "xorctree2.xml", "loopctree1.xml"};
+	public final static String[] PETRINETS_FOR_DIRECT_CTREE = {"seq1.xml", "xorctree1.xml", "xorctree2.xml", 
+			"loopctree1.xml", "loopctree2.xml", "xorctree3.xml"};
 
 	public final static String dotFile = "smallgraph.dot";
 	public final static String outputFile = "ctree.png";
@@ -203,6 +205,22 @@ public class TestUtils {
 			}
 		}
 		return sb.toString();
+	}
+	
+	public static void drawNetAndShow(Net net) {
+		String mtext = net.printNetForDot();
+		File mf = new File(dotFile);
+		TestUtils.createSampleDotFile(mf, mtext);
+		ProcessBuilder pb = new ProcessBuilder();
+		TestUtils.runDot(dotFile, pb, outputFile);
+		TestUtils.showDotGraphMac(pb, outputFile);
+		try {
+			TimeUnit.SECONDS.sleep(3);
+		} catch (InterruptedException e) {
+			fail();
+		}	
+		TestUtils.deleteFile(dotFile);
+		TestUtils.deleteFile(outputFile);
 	}
 
 }

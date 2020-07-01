@@ -24,12 +24,19 @@ public class NetFolder {
 		return m;
 	}
 
-	public static Set<Place> foldPlace(Net net, Place p) {
+	/**
+	 * folds a given place in a net that has single in-out post-transition
+	 * 
+	 * @param net the net in context
+	 * @param p   the place to fold
+	 * @return the set of places which got folded. They are now non-existent in the
+	 *         net.
+	 */
+	public static void foldPlace(Net net, Place p) {
 		if (p.howManyOutArcs() == IUtils.ZERO) {
-			return null;
+			return;
 		}
 		Set<Place> ps = net.getPlaces();
-		Set<Place> removeplace = null;
 		FoldedPlace ep = null;
 		Place e = null;
 		Iterator psit = ps.iterator();
@@ -37,30 +44,24 @@ public class NetFolder {
 			e = (Place) psit.next();
 			if (e.getLabel().equals(p.getLabel())) {
 				ep = new FoldedPlace(e);
-				removeplace = ep.foldPostNodes();
+				ep.foldPostNodes(net);
 				break;
 			}
 		}
-		for (Place rp : removeplace) {
-			net.removePlace(rp);
-		}
-		return removeplace;
 	}
 
+	/**
+	 * folds the whole net whenever possible for any place 
+	 * that has single in-out post transitions
+	 * @param net
+	 */
 	public static void foldSeqPlaces(Net net) {
 		Queue<Place> places = new LinkedList<Place>(net.getPlaces());
 		Place p = null;
 		do {
 			p = places.poll();
-			//System.out.println("going to fold " + p.getLabel());
 			if (p != null) {
-				Set<Place> rp = foldPlace(net, p);
-				//System.out.println("folded " + p.getLabel());
-				if (rp != null) {
-					for (Place rps : rp) {
-						places.remove(rps);
-					}
-				}
+				foldPlace(net, p);
 				places.add(p);
 			}
 			

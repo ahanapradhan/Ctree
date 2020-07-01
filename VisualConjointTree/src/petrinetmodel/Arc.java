@@ -30,5 +30,8 @@ public class Arc {
 	public void setInNode(Node i) {
 		in = i;
 	}
+	public void setOutNode(Node o) {
+		out = o;
+	}
 
 }

@@ -1,9 +1,6 @@
 package petrinetmodel;
 
-import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import util.IUtils;
 import util.StringUtils;
@@ -19,6 +16,61 @@ public class FoldedPlace {
 	
 	public Place getPlace() {
 		return p;
+	}
+
+	private Transition isThereSingleInOutTrans() {
+		List<Arc> pinitOutArcs = p.getOutArcs();
+		if (pinitOutArcs.size() == IUtils.ZERO) { // no post-place to fold
+			return null;
+		}
+		for (Arc a : pinitOutArcs) {
+			Transition postt = (Transition) a.getOutNode();
+			if (postt.isItOneInOneOut()) {
+				p.removeOutArc(a);
+				return postt;
+			}
+		}
+		return null;
+	}
+
+	public void foldPostNodes(Net net) {		
+		Transition postt = null;
+		while ((postt = isThereSingleInOutTrans()) != null) {
+			Place postp = (Place) postt.getOutArcs().get(IUtils.FIRST_INDEX).getOutNode();
+
+			if (postp != p) {				
+				modifyIncomingArcs(postt, postp);
+				modifyOutgoingArcs(postp);
+				net.removePlace(postp);
+				net.updatePlaceLabel(p, StringUtils.removeDuplicates(p.getLabel() + "," + postp.getLabel()));
+			}
+			net.removeTransition(postt);
+		}
+	}
+
+	private void modifyOutgoingArcs(Place postp) {
+		if (postp.howManyOutArcs() == IUtils.ZERO) {
+			// postp is sink place. nothing to do about it
+			return;
+		}
+		for (Arc outa : postp.getOutArcs()) {
+			outa.setInNode(p);
+			p.addOutArc(outa);
+		}
+	}
+
+	private void modifyIncomingArcs(Transition postt, Place postp) {
+		if (postp.getInArcs().size() == IUtils.ONE) {
+			// postt is the only prenode of postp. nothing to do about it
+			return;
+		}
+		for (Arc ina : postp.getInArcs()) {
+			if (ina.getInNode() != postt) {
+				ina.setOutNode(p);
+				p.addInArc(ina);
+				// same modifications to net also
+			}
+		}
 	}
 
 	public String getFoldedLabel() {
@@ -46,38 +98,5 @@ public class FoldedPlace {
 		hasFoldedLabel = true;
 		sb = StringUtils.removeDuplicates(sb);
 		p.setLabel(sb.toString());
-	}
-
-	public Set<Place> foldPostNodes() {
-		List<Arc> pinitOutArcs = p.getOutArcs();
-		List<Arc> arcstoremove = new ArrayList<Arc>();
-		List<Arc> arcstoadd = new ArrayList<Arc>();
-		Set<Place> placetoremove = new HashSet<Place>(); // net has to remove this set
-		if (pinitOutArcs != null) {
-			for (Arc a : pinitOutArcs) {
-				Transition postt = (Transition) a.getOutNode();
-				if (postt.isItOneInOneOut()) {
-					Place postp = (Place) postt.getOutArcs().get(IUtils.FIRST_INDEX).getOutNode();
-					p.setLabel(p.getLabel() + "," + postp.getLabel());
-					arcstoremove.add(a);
-					placetoremove.add(postp);
-
-					if (postp.getOutArcs() != null) {
-						for (Arc nexta : postp.getOutArcs()) {
-							nexta.setInNode(p);
-							arcstoadd.add(nexta);
-						}
-					}
-				}
-			}
-		}
-		for (Arc a : arcstoremove) {
-			p.removeOutArc(a);
-		}
-		for (Arc a : arcstoadd) {
-			p.addOutArc(a);
-		}
-		p.setLabel(StringUtils.removeDuplicates(p.getLabel()));
-		return placetoremove;
 	}
 }

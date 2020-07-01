@@ -60,6 +60,16 @@ public class Net {
 		}
 	}
 
+	public void addArc(Arc a) {
+		if (!arcs.contains(a)) {
+			arcs.add(a);
+		}
+	}
+
+	public void removeArc(Arc a) {
+		arcs.remove(a);
+	}
+
 	public void addPlace(Place p) {
 		places.put(p.getLabel(), p);
 		ps.add(p);
@@ -86,6 +96,29 @@ public class Net {
 				outlabel = a.getOutNode().getLabel();
 			}
 			if (plabel.equals(inlabel) || plabel.equals(outlabel)) {
+				arcstoremove.add(arcs.get(i));
+			}
+		}
+		for (Arc a : arcstoremove) {
+			arcs.remove(a);
+		}
+	}
+
+	public void removeTransition(Transition t) {
+		transitions.remove(t.getLabel());
+		ts.remove(t);
+		List<Arc> arcstoremove = new ArrayList<Arc>();
+		String tlabel = t.getLabel();
+		for (int i = 0; i < arcs.size(); i++) {
+			Arc a = arcs.get(i);
+			String inlabel = null, outlabel = null;
+			if (a.getInNode() != null) {
+				inlabel = a.getInNode().getLabel();
+			}
+			if (a.getOutNode() != null) {
+				outlabel = a.getOutNode().getLabel();
+			}
+			if (tlabel.equals(inlabel) || tlabel.equals(outlabel)) {
 				arcstoremove.add(arcs.get(i));
 			}
 		}
@@ -148,9 +181,9 @@ public class Net {
 		sb.append("    subgraph place {\n");
 		sb.append("    graph [shape=circle];\n");
 		sb.append("    node [shape=circle,fixedsize=true,width=0.7, style=filled, color=darkseagreen2];\n");
-	    for(Place p : ps) {
-	    	sb.append("    "+ p.getLabel()+";\n");
-	    }
+		for (Place p : ps) {
+			sb.append("    \"" + p.getLabel() + "\";\n");
+		}
 		sb.append("    }\n");
 		sb.append("    subgraph transitions {\n");
 		sb.append("    node [shape=rect,height=0.7,width=0.2, style=filled,color=\".7 .3 1.0\"];\n");
@@ -206,5 +239,11 @@ public class Net {
 			}
 		}	
 		return sb.toString();
+	}
+
+	public void updatePlaceLabel(Place p, String newLabel) {
+		places.remove(p.getLabel());
+		p.setLabel(newLabel);
+		places.put(newLabel, p);		
 	}
 }
