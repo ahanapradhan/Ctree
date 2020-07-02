@@ -36,15 +36,53 @@ class NetTest {
 	}
 	
 	@Test
+	void test_netfolder_seqfold() {
+		Net m = PNMLParser.readPIPExmlFile(TestUtils.INPUT_NETS_DIR + TestUtils.PETRINETS_FOR_DIRECT_CTREE[2]);
+		Net m1 = new Net(m);
+		TestUtils.drawNetAndShow(m1);
+		Set<Place> ps = m1.getPlaces();
+		for (Place p : ps) {
+			if (p.getLabel().equals("p6")) {
+				NetFolder.foldSingleInOutPostTransitions(m1, p);
+				assertTrue("p3,p5,p6".equals(p.getLabel()));
+				TestUtils.drawNetAndShow(m1);
+				assertEquals(5, m1.getPlaces().size());
+				break;
+			}
+		}
+		ps = m1.getPlaces();
+		for (Place p : ps) {
+			if (p.getLabel().equals("p2")) {
+				NetFolder.foldSingleInOutPostTransitions(m1, p);
+				assertTrue("p2,p3,p5,p6".equals(p.getLabel()));
+				TestUtils.drawNetAndShow(m1);
+				assertEquals(4, m1.getPlaces().size());
+				break;
+			}
+		}
+		ps = m1.getPlaces();
+		for (Place p : ps) {
+			if (p.getLabel().equals("p1")) {
+				NetFolder.foldSingleInOutPostTransitions(m1, p);
+				assertTrue("p1,p2,p3,p4,p5,p6".equals(p.getLabel()));
+				TestUtils.drawNetAndShow(m1);
+				assertEquals(2, m1.getPlaces().size());
+				break;
+			}
+		}
+	}
+	
+	@Test
 	void test_netfolder_test_loop() {
 		Net m = PNMLParser.readPIPExmlFile(TestUtils.INPUT_NETS_DIR + TestUtils.PETRINETS_FOR_DIRECT_CTREE[3]);
 		Net m1 = new Net(m);
-		
+		TestUtils.drawNetAndShow(m1);
 		NetFolder.foldOneInOneOutTransitions(m1);
 		Set<Place> ps = m1.getPlaces();
 		for (Place p : ps) {
 			if (p.howManyInArcs() == IUtils.ZERO) {
 				assertTrue("p0,p1,p2,p3,p4,p5,p6".equals(p.getLabel()));
+				TestUtils.drawNetAndShow(m1);
 				break;
 			}
 		}
@@ -69,21 +107,13 @@ class NetTest {
 	void test_netfolder_test5() {
 		Net m = PNMLParser.readPIPExmlFile(TestUtils.INPUT_NETS_DIR + TestUtils.PETRINETS_FOR_DIRECT_CTREE[1]);
 		Net m1 = new Net(m);
+		TestUtils.drawNetAndShow(m1);
 		Set<Place> ps = m1.getPlaces();
 		for (Place p : ps) {
 			if (p.howManyInArcs() == IUtils.ZERO) {
 				NetFolder.foldSingleInOutPostTransitions(m1, p);
-				assertTrue("p0,p1".equals(p.getLabel()));
 				TestUtils.drawNetAndShow(m1);
-				NetFolder.foldSingleInOutPostTransitions(m1, p);
-				assertTrue("p0,p1,p2,p4".equals(p.getLabel()));
-				TestUtils.drawNetAndShow(m1);
-				NetFolder.foldSingleInOutPostTransitions(m1, p);
-				assertTrue("p0,p1,p2,p3,p4".equals(p.getLabel()));
-				TestUtils.drawNetAndShow(m1);
-				NetFolder.foldSingleInOutPostTransitions(m1, p);
 				assertTrue("p0,p1,p2,p3,p4,p5".equals(p.getLabel()));
-				TestUtils.drawNetAndShow(m1);
 				assertEquals(m1.getPlaces().size(), 1);
 				assertEquals(m1.getTransitions().size(), 0);
 				assertEquals(m1.getArcs().size(), 0);
@@ -92,107 +122,7 @@ class NetTest {
 		}
 	}
 	
-	@Test
-	void test_netfolder_test4() {
-		Net m = PNMLParser.readPIPExmlFile(TestUtils.INPUT_NETS_DIR + TestUtils.PETRINETS_FOR_DIRECT_CTREE[0]);
-		Net m1 = new Net(m);
-		Set<Place> ps = m1.getPlaces();
-		String flabel = "";
-		for (Place p : ps) {
-			if (p.howManyInArcs() == IUtils.ZERO) {
-				NetFolder.foldSingleInOutPostTransitions(m1, p);
-				assertTrue("p0,p1".equals(p.getLabel()));
-				TestUtils.drawNetAndShow(m1);
-				NetFolder.foldSingleInOutPostTransitions(m1, p);
-				assertTrue("p0,p1,p2".equals(p.getLabel()));
-				TestUtils.drawNetAndShow(m1);
-				NetFolder.foldSingleInOutPostTransitions(m1, p);
-				assertTrue("p0,p1,p2,p3".equals(p.getLabel()));
-				TestUtils.drawNetAndShow(m1);
-				NetFolder.foldSingleInOutPostTransitions(m1, p);
-				assertTrue("p0,p1,p2,p3,p4".equals(p.getLabel()));
-				TestUtils.drawNetAndShow(m1);
-				assertEquals(m1.getPlaces().size(), 1);
-				assertEquals(m1.getTransitions().size(), 0);
-				assertEquals(m1.getArcs().size(), 0);
-				break;
-			}
-		}
-
-		ps = m.getPlaces();
-		for (Place p : ps) {
-			if (p.howManyInArcs() == IUtils.ZERO) {
-				flabel = p.getLabel();
-				assertTrue("p0".equals(flabel));
-			}
-		}
-	}
 	
-	@Test
-	void test_netfolder_test3() {
-		Net m = PNMLParser.readPIPExmlFile(TestUtils.INPUT_NETS_DIR + TestUtils.PETRINETS_FOR_DIRECT_CTREE[2]);
-		Net m1 = NetFolder.foldLabelOfSourcePlace(m);
-		Set<Place> ps = m1.getPlaces();
-		String flabel = "";
-		for (Place p : ps) {
-			if (p.howManyInArcs() == IUtils.ZERO) {
-				flabel = p.getLabel();
-				assertTrue("p0,p1,p2,p3,p4,p5,p6".equals(flabel));
-			}
-		}
-		
-		ps = m.getPlaces();
-		for (Place p : ps) {
-			if (p.howManyInArcs() == IUtils.ZERO) {
-				flabel = p.getLabel();
-				assertTrue("p0".equals(flabel));
-			}
-		}		
-	}
-	
-	@Test
-	void test_netfolder_test2() {
-		Net m = PNMLParser.readPIPExmlFile(TestUtils.INPUT_NETS_DIR + TestUtils.PETRINETS_FOR_DIRECT_CTREE[1]);
-		Net m1 = NetFolder.foldLabelOfSourcePlace(m);
-		Set<Place> ps = m1.getPlaces();
-		String flabel = "";
-		for (Place p : ps) {
-			if (p.howManyInArcs() == IUtils.ZERO) {
-				flabel = p.getLabel();
-				assertTrue("p0,p1,p2,p3,p4,p5".equals(flabel));
-			}
-		}
-		
-		ps = m.getPlaces();
-		for (Place p : ps) {
-			if (p.howManyInArcs() == IUtils.ZERO) {
-				flabel = p.getLabel();
-				assertTrue("p0".equals(flabel));
-			}
-		}		
-	}
-	
-	@Test
-	void test_netfolder_test1() {
-		Net m = PNMLParser.readPIPExmlFile(TestUtils.INPUT_NETS_DIR + TestUtils.PETRINET_XML_FILES[7]);
-		Net m1 = NetFolder.foldLabelOfSourcePlace(m);
-		Set<Place> ps = m1.getPlaces();
-		String flabel = "";
-		for (Place p : ps) {
-			if (p.howManyInArcs() == IUtils.ZERO) {
-				flabel = p.getLabel();
-				assertTrue("p0,p1,p2,p3,p4".equals(flabel));
-			}
-		}
-		
-		ps = m.getPlaces();
-		for (Place p : ps) {
-			if (p.howManyInArcs() == IUtils.ZERO) {
-				flabel = p.getLabel();
-				assertTrue("p0".equals(flabel));
-			}
-		}
-	}
 	
 	@Test
 	void test_netcopy_test1() {
@@ -313,6 +243,32 @@ class NetTest {
 				TestUtils.drawNetAndShow(m1);
 				assertEquals(1, m1.getPlaces().size());
 				break;
+			}
+		}
+	}
+	
+	@Test
+	void test_netfolder_test4() {
+		Net m = PNMLParser.readPIPExmlFile(TestUtils.INPUT_NETS_DIR + TestUtils.PETRINETS_FOR_DIRECT_CTREE[0]);
+		Net m1 = new Net(m);
+		Set<Place> ps = m1.getPlaces();
+		String flabel = "";
+		for (Place p : ps) {
+			if (p.howManyInArcs() == IUtils.ZERO) {
+				NetFolder.foldSingleInOutPostTransitions(m1, p);
+				assertTrue("p0,p1,p2,p3,p4".equals(p.getLabel()));
+				assertEquals(m1.getPlaces().size(), 1);
+				assertEquals(m1.getTransitions().size(), 0);
+				assertEquals(m1.getArcs().size(), 0);
+				break;
+			}
+		}
+
+		ps = m.getPlaces();
+		for (Place p : ps) {
+			if (p.howManyInArcs() == IUtils.ZERO) {
+				flabel = p.getLabel();
+				assertTrue("p0".equals(flabel));
 			}
 		}
 	}
