@@ -32,7 +32,7 @@ public class NetFolder {
 	 * @return the set of places which got folded. They are now non-existent in the
 	 *         net.
 	 */
-	public static void foldPlace(Net net, Place p) {
+	public static void foldSingleInOutPostTransitions(Net net, Place p) {
 		if (p.howManyOutArcs() == IUtils.ZERO) {
 			return;
 		}
@@ -44,7 +44,7 @@ public class NetFolder {
 			e = (Place) psit.next();
 			if (e.getLabel().equals(p.getLabel())) {
 				ep = new FoldedPlace(e);
-				ep.foldPostNodes(net);
+				ep.foldSingleInOutPostTransitions(net);
 				break;
 			}
 		}
@@ -55,13 +55,13 @@ public class NetFolder {
 	 * that has single in-out post transitions
 	 * @param net
 	 */
-	public static void foldSeqPlaces(Net net) {
+	public static void foldOneInOneOutTransitions(Net net) {
 		Queue<Place> places = new LinkedList<Place>(net.getPlaces());
 		Place p = null;
 		do {
 			p = places.poll();
 			if (p != null) {
-				foldPlace(net, p);
+				foldSingleInOutPostTransitions(net, p);
 				places.add(p);
 			}
 			

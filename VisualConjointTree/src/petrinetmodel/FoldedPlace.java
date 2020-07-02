@@ -33,14 +33,14 @@ public class FoldedPlace {
 		return null;
 	}
 
-	public void foldPostNodes(Net net) {		
+	public void foldSingleInOutPostTransitions(Net net) {		
 		Transition postt = null;
 		while ((postt = isThereSingleInOutTrans()) != null) {
 			Place postp = (Place) postt.getOutArcs().get(IUtils.FIRST_INDEX).getOutNode();
 
 			if (postp != p) {				
-				modifyIncomingArcs(postt, postp);
-				modifyOutgoingArcs(postp);
+				modifyIncomingArcs_singleInOut(postt, postp);
+				modifyOutgoingArcs_singleInOut(postp);
 				net.removePlace(postp);
 				net.updatePlaceLabel(p, StringUtils.removeDuplicates(p.getLabel() + "," + postp.getLabel()));
 			}
@@ -48,7 +48,7 @@ public class FoldedPlace {
 		}
 	}
 
-	private void modifyOutgoingArcs(Place postp) {
+	private void modifyOutgoingArcs_singleInOut(Place postp) {
 		if (postp.howManyOutArcs() == IUtils.ZERO) {
 			// postp is sink place. nothing to do about it
 			return;
@@ -59,7 +59,7 @@ public class FoldedPlace {
 		}
 	}
 
-	private void modifyIncomingArcs(Transition postt, Place postp) {
+	private void modifyIncomingArcs_singleInOut(Transition postt, Place postp) {
 		if (postp.getInArcs().size() == IUtils.ONE) {
 			// postt is the only prenode of postp. nothing to do about it
 			return;
@@ -68,7 +68,6 @@ public class FoldedPlace {
 			if (ina.getInNode() != postt) {
 				ina.setOutNode(p);
 				p.addInArc(ina);
-				// same modifications to net also
 			}
 		}
 	}

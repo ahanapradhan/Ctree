@@ -40,7 +40,7 @@ class NetTest {
 		Net m = PNMLParser.readPIPExmlFile(TestUtils.INPUT_NETS_DIR + TestUtils.PETRINETS_FOR_DIRECT_CTREE[3]);
 		Net m1 = new Net(m);
 		
-		NetFolder.foldSeqPlaces(m1);
+		NetFolder.foldOneInOneOutTransitions(m1);
 		Set<Place> ps = m1.getPlaces();
 		for (Place p : ps) {
 			if (p.howManyInArcs() == IUtils.ZERO) {
@@ -55,7 +55,7 @@ class NetTest {
 		Net m = PNMLParser.readPIPExmlFile(TestUtils.INPUT_NETS_DIR + TestUtils.PETRINETS_FOR_DIRECT_CTREE[2]);
 		Net m1 = new Net(m);
 		
-		NetFolder.foldSeqPlaces(m1);
+		NetFolder.foldOneInOneOutTransitions(m1);
 		Set<Place> ps = m1.getPlaces();
 		for (Place p : ps) {
 			if (p.howManyInArcs() == IUtils.ZERO) {
@@ -69,21 +69,19 @@ class NetTest {
 	void test_netfolder_test5() {
 		Net m = PNMLParser.readPIPExmlFile(TestUtils.INPUT_NETS_DIR + TestUtils.PETRINETS_FOR_DIRECT_CTREE[1]);
 		Net m1 = new Net(m);
-		
-		NetFolder.foldSeqPlaces(m1);
 		Set<Place> ps = m1.getPlaces();
 		for (Place p : ps) {
 			if (p.howManyInArcs() == IUtils.ZERO) {
-				NetFolder.foldPlace(m1, p);
+				NetFolder.foldSingleInOutPostTransitions(m1, p);
 				assertTrue("p0,p1".equals(p.getLabel()));
 				TestUtils.drawNetAndShow(m1);
-				NetFolder.foldPlace(m1, p);
+				NetFolder.foldSingleInOutPostTransitions(m1, p);
 				assertTrue("p0,p1,p2,p4".equals(p.getLabel()));
 				TestUtils.drawNetAndShow(m1);
-				NetFolder.foldPlace(m1, p);
+				NetFolder.foldSingleInOutPostTransitions(m1, p);
 				assertTrue("p0,p1,p2,p3,p4".equals(p.getLabel()));
 				TestUtils.drawNetAndShow(m1);
-				NetFolder.foldPlace(m1, p);
+				NetFolder.foldSingleInOutPostTransitions(m1, p);
 				assertTrue("p0,p1,p2,p3,p4,p5".equals(p.getLabel()));
 				TestUtils.drawNetAndShow(m1);
 				assertEquals(m1.getPlaces().size(), 1);
@@ -102,16 +100,16 @@ class NetTest {
 		String flabel = "";
 		for (Place p : ps) {
 			if (p.howManyInArcs() == IUtils.ZERO) {
-				NetFolder.foldPlace(m1, p);
+				NetFolder.foldSingleInOutPostTransitions(m1, p);
 				assertTrue("p0,p1".equals(p.getLabel()));
 				TestUtils.drawNetAndShow(m1);
-				NetFolder.foldPlace(m1, p);
+				NetFolder.foldSingleInOutPostTransitions(m1, p);
 				assertTrue("p0,p1,p2".equals(p.getLabel()));
 				TestUtils.drawNetAndShow(m1);
-				NetFolder.foldPlace(m1, p);
+				NetFolder.foldSingleInOutPostTransitions(m1, p);
 				assertTrue("p0,p1,p2,p3".equals(p.getLabel()));
 				TestUtils.drawNetAndShow(m1);
-				NetFolder.foldPlace(m1, p);
+				NetFolder.foldSingleInOutPostTransitions(m1, p);
 				assertTrue("p0,p1,p2,p3,p4".equals(p.getLabel()));
 				TestUtils.drawNetAndShow(m1);
 				assertEquals(m1.getPlaces().size(), 1);
@@ -279,7 +277,7 @@ class NetTest {
 		Set<Place> ps = m1.getPlaces();
 		for (Place p : ps) {
 			if (p.getLabel().equals("p6")) {
-				NetFolder.foldPlace(m1, p);
+				NetFolder.foldSingleInOutPostTransitions(m1, p);
 				assertTrue("p3,p6".equals(p.getLabel()));
 				TestUtils.drawNetAndShow(m1);
 				assertEquals(4, m1.getPlaces().size());
@@ -290,7 +288,7 @@ class NetTest {
 		for (Place p : ps) {
 			if (p.getLabel().equals("p4")) {
 
-				NetFolder.foldPlace(m1, p);
+				NetFolder.foldSingleInOutPostTransitions(m1, p);
 				assertTrue("p3,p4,p6".equals(p.getLabel()));
 				TestUtils.drawNetAndShow(m1);
 				assertEquals(3, m1.getPlaces().size());
@@ -300,7 +298,7 @@ class NetTest {
 		ps = m1.getPlaces();
 		for (Place p : ps) {
 			if (p.getLabel().equals("p2")) {
-				NetFolder.foldPlace(m1, p);
+				NetFolder.foldSingleInOutPostTransitions(m1, p);
 				assertTrue("p2,p3,p4,p6".equals(p.getLabel()));
 				TestUtils.drawNetAndShow(m1);
 				assertEquals(2, m1.getPlaces().size());
@@ -310,7 +308,7 @@ class NetTest {
 		ps = m1.getPlaces();
 		for (Place p : ps) {
 			if (p.getLabel().equals("p1")) {
-				NetFolder.foldPlace(m1, p);
+				NetFolder.foldSingleInOutPostTransitions(m1, p);
 				assertTrue("p1,p2,p3,p4,p6".equals(p.getLabel()));
 				TestUtils.drawNetAndShow(m1);
 				assertEquals(1, m1.getPlaces().size());
