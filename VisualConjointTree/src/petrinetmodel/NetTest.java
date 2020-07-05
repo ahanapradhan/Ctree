@@ -36,6 +36,17 @@ class NetTest {
 	}
 	
 	@Test
+	void test_netfolder_Andnet_nonFold() {
+		Net m = PNMLParser.readPIPExmlFile(TestUtils.INPUT_NETS_DIR + TestUtils.PETRINET_XML_FILES[1]);
+		Net m1 = new Net(m);
+		TestUtils.drawNetAndShow(m1);
+		NetFolder.foldOneInOneOutTransitions(m1);
+		TestUtils.drawNetAndShow(m1);
+		assertEquals(7, m1.getPlaces().size());
+		assertEquals(4, m1.getTransitions().size());
+	}
+	
+	@Test
 	void test_netfolder_seqfold() {
 		Net m = PNMLParser.readPIPExmlFile(TestUtils.INPUT_NETS_DIR + TestUtils.PETRINETS_FOR_DIRECT_CTREE[2]);
 		Net m1 = new Net(m);

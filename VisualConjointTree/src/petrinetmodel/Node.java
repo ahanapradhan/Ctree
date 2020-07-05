@@ -17,24 +17,35 @@ public abstract class Node {
 	Set<Node> preNodes = null;
 	Set<Node> postNodes = null;
 	
-	protected int unvisitedInArcs;
+	protected int unvisitedInArcs; // this is only for ecws
 	
 	protected abstract String getFork();
 	protected abstract String getJoin();
+	
+	/**
+	 * This method returns true if the node has Matching number of in and out arcs
+	 * @param inNum number of input arcs to match
+	 * @param outNum number of outgoing arcs
+	 * @return true or false
+	 * 
+	 * in/out Num: if 0, match with 0. if 1, match with 1. if any other value, match with > 1
+	 * e.g. inNum 1, outNum 2: does this node has 1 input arc and multiple output arcs?
+	 *      inNum 1, outNum 1: does this node has 1 input arc and 1 outgoing arc?
+	 */
 
-	protected boolean isItOneInOneOut() {
-		boolean inyes = false, outyes = false;
-		if (getInArcs() == null) {
-			inyes = inyes || true;
-		} else if (getInArcs().size() == IUtils.ONE) {
-			inyes = inyes || true;
-		}
-
-		if (getOutArcs() == null) {
-			outyes = outyes || true;
-		} else if (getOutArcs().size() == IUtils.ONE) {
-			outyes = outyes || true;
-		}
+	protected boolean hasMatchingInOut(int inNum, int outNum) {
+		boolean inyes, outyes;
+		boolean ingt, outgt;
+		ingt = (inNum > IUtils.ONE) ? true : false;
+		outgt = (outNum > IUtils.ONE) ? true : false;
+		
+		if (getInArcs() == null || getOutArcs() == null) {
+			return false;
+		} 
+        
+		inyes = (ingt) ? (inArcs.size() > IUtils.ONE) : (inArcs.size() == inNum);
+		outyes = (outgt) ? (outArcs.size() > IUtils.ONE) : (outArcs.size() == outNum);
+		
 		return (inyes && outyes);
 	}
 
@@ -60,11 +71,8 @@ public abstract class Node {
 			
 			for(Arc a : inArcs) {
 				Node n = a.getInNode();
-				if (n!=null && !preNodes.contains(n)) {
+				if (n != null) {
 					preNodes.add(n);
-					if (n.getPreNodes() != null) {
-					    preNodes.addAll(n.getPreNodes());
-					}
 				}
 			}
 		}
@@ -72,16 +80,12 @@ public abstract class Node {
 	}
 	
 	protected Set<Node> getPostNodes() {
-		if (outArcs != null && postNodes == null) {
+		if (outArcs != null && (postNodes == null || postNodes.isEmpty())) {
 			postNodes = new HashSet<Node>();
-			
-			for(Arc a : outArcs) {
+			for (Arc a : outArcs) {
 				Node n = a.getOutNode();
-				if (n!=null && !postNodes.contains(n)) {
+				if (n != null) {
 					postNodes.add(n);
-					if (n.getPostNodes() != null) {
-					    postNodes.addAll(n.getPostNodes());
-					}
 				}
 			}
 		}
@@ -121,6 +125,7 @@ public abstract class Node {
     		outArcs = new ArrayList<Arc>();
     	}
     	outArcs.add(a);
+    	postNodes = null; // have to rebuild on next call
     }
     
     public List<Arc> getInArcs() {

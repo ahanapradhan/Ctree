@@ -3,6 +3,7 @@ package petrinetmodel;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -244,6 +245,61 @@ public class Net {
 	public void updatePlaceLabel(Place p, String newLabel) {
 		places.remove(p.getLabel());
 		p.setLabel(newLabel);
-		places.put(newLabel, p);		
+		places.put(newLabel, p);
+	}
+
+	public static Transition haveCommonPostTrans(Set<Place> ps) {
+		Set<Node> postps = new HashSet<Node>();
+        Transition t = null;
+		Iterator psit = ps.iterator();
+		for (int i = 0; i < ps.size(); i++) {
+			Place p = (Place) psit.next();
+			if (i == 0) {
+				postps = p.getPostNodes();
+			} else {
+				postps.retainAll(p.getPostNodes());
+			}
+		}
+
+		for (Node n : postps) {
+			/*
+			 * as of now returning the 1st common transition
+			 * assuming that only 1 common post transition in structured AND block as AND join.
+			 * May have to change later to handle more complecated AND structure
+			 */
+			t = (Transition) n;
+			break;
+		}
+		return t;
+	}
+	
+	public Arc findArc(Node in, Node out) {
+		boolean yes = false;
+		for(Arc a : arcs) {
+			if (in == null && a.getInNode() == null) {
+				yes = yes || true;
+			}
+			else if (in != null && a.getInNode() != null && in == a.getInNode()) {
+				yes = yes || true;
+			}
+			else {
+				yes = yes && false;
+			}
+			
+			if (out == null && a.getOutNode() == null) {
+				yes = yes || true;
+			}
+			else if (out != null && a.getOutNode() != null && out == a.getOutNode()) {
+				yes = yes || true;
+			}
+			else {
+				yes = yes && false;
+			}
+			
+			if (yes) {
+				return a;
+			}
+		}
+		return null;
 	}
 }

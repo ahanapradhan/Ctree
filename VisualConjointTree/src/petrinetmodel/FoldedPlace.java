@@ -1,6 +1,8 @@
 package petrinetmodel;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import util.IUtils;
 import util.StringUtils;
@@ -8,44 +10,47 @@ import util.StringUtils;
 public class FoldedPlace {
 	private Place p;
 
-	boolean hasFoldedLabel = false;
-
 	public FoldedPlace(Place p) {
 		this.p = p;
 	}
-	
+
 	public Place getPlace() {
 		return p;
 	}
 
-	private Transition isThereSingleInOutTrans() {
+	private Transition hasMatchingInOutPostTrans(int inNum, int outNum) {
 		List<Arc> pinitOutArcs = p.getOutArcs();
 		if (pinitOutArcs.size() == IUtils.ZERO) { // no post-place to fold
 			return null;
 		}
 		for (Arc a : pinitOutArcs) {
-			Transition postt = (Transition) a.getOutNode();
-			if (postt.isItOneInOneOut()) {
-				p.removeOutArc(a);
-				return postt;
+			if (!a.isFoldVisited()) {
+				Transition postt = (Transition) a.getOutNode();
+				if (postt.hasMatchingInOut(inNum, outNum)) {
+					a.visitForFolding();
+					return postt;
+				}
 			}
 		}
 		return null;
 	}
 
-	public void foldSingleInOutPostTransitions(Net net) {		
+	public Set<Place> foldSingleInOutPostTransitions(Net net) {
+		Set<Place> removedPlaces = new HashSet<Place>();
 		Transition postt = null;
-		while ((postt = isThereSingleInOutTrans()) != null) {
+		while ((postt = hasMatchingInOutPostTrans(IUtils.ONE, IUtils.ONE)) != null) {
 			Place postp = (Place) postt.getOutArcs().get(IUtils.FIRST_INDEX).getOutNode();
 
-			if (postp != p) {				
+			if (postp != p) {
 				modifyIncomingArcs_singleInOut(postt, postp);
 				modifyOutgoingArcs_singleInOut(postp);
 				net.removePlace(postp);
+				removedPlaces.add(postp);
 				net.updatePlaceLabel(p, StringUtils.removeDuplicates(p.getLabel() + "," + postp.getLabel()));
 			}
 			net.removeTransition(postt);
 		}
+		return removedPlaces;
 	}
 
 	private void modifyOutgoingArcs_singleInOut(Place postp) {
@@ -72,30 +77,35 @@ public class FoldedPlace {
 		}
 	}
 
-	public String getFoldedLabel() {
-		if (!hasFoldedLabel) {
-			buildFoldedLabel();
-		}
-		return p.getLabel();
-	}
+	public Set<Place> foldSingleInMultiOutPostTransitions(Net net) {
+		Set<Place> removedPlaces = new HashSet<Place>();
+		Transition forkpostt = null;
+		Transition joinpostt = null;
+		Place joinp = null;
+		while ((forkpostt = hasMatchingInOutPostTrans(IUtils.ONE, IUtils.MORE_THAN_ONE)) != null) {
+			Set<Place> postps = new HashSet<Place>();
+			for (Node n : forkpostt.getPostNodes()) {
+				postps.add((Place) n);
+			}
+			joinpostt = Net.haveCommonPostTrans(postps);
+			if (joinpostt == null) {
+				Arc ua = net.findArc(p, forkpostt);
+				ua.unvisitDuringFolding();
+				return null;
+			}
 
-	private void buildFoldedLabel() {
-		StringBuilder sb = new StringBuilder();
-		sb.append(p.getLabel());
-
-		if (p.getOutArcs() != null) {
-			for (Arc a : p.getOutArcs()) {
-				Transition postt = (Transition) a.getOutNode();
-				if (postt.isItOneInOneOut()) {
-					Place fp = (Place) postt.getOutArcs().get(IUtils.FIRST_INDEX).getOutNode();
-					FoldedPlace fpp = new FoldedPlace(fp);
-					String plabel = fpp.getFoldedLabel();
-					sb.append("," + plabel);
+			if (joinpostt.howManyOutArcs() == IUtils.ONE) {
+				joinp = (Place) joinpostt.getOutArcs().get(IUtils.FIRST_INDEX).getOutNode();
+				if (joinp != p) {
+					modifyIncomingArcs_singleInOut(joinpostt, joinp);
+					modifyOutgoingArcs_singleInOut(joinp);
+					net.removePlace(joinp);
+					removedPlaces.add(joinp);
+					net.updatePlaceLabel(p, StringUtils.removeDuplicates(p.getLabel() + "," + joinp.getLabel()));
 				}
+				net.removeTransition(joinpostt);
 			}
 		}
-		hasFoldedLabel = true;
-		sb = StringUtils.removeDuplicates(sb);
-		p.setLabel(sb.toString());
+		return removedPlaces;
 	}
 }

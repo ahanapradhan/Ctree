@@ -5,6 +5,7 @@ public class Arc {
 	Node in;
 	Node out;
 	String label;
+	boolean foldvisited = false;
 	
 	public String getLabel() {
 		return label;
@@ -32,6 +33,18 @@ public class Arc {
 	}
 	public void setOutNode(Node o) {
 		out = o;
+	}
+	
+	public void visitForFolding() {
+		foldvisited = true;
+	}
+	
+	public void unvisitDuringFolding() {
+		foldvisited = false;
+	}
+	
+	public boolean isFoldVisited(){
+		return foldvisited;
 	}
 
 }
