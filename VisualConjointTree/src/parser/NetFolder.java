@@ -1,6 +1,5 @@
 package parser;
 
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Queue;
 import java.util.Set;
@@ -105,9 +104,5 @@ public interface NetFolder {
 		foldedPlaces = ep.foldSingleInMultiOutPostTransitions(net);
 
 		return foldedPlaces;
-	}
-
-	public static void foldMultiInMultiOutTransitions(Net net) {
-
 	}
 }

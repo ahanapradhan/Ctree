@@ -8,6 +8,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import util.IUtils;
+
 public class Net {
 	Map<String, Place> places = null;           // labels are key
 	Map<String, Transition> transitions = null; // labels are key
@@ -301,5 +303,39 @@ public class Net {
 			}
 		}
 		return null;
+	}
+	
+	public void replaceMultiInOutTransitions() {
+		Set<Transition> toremove = new HashSet<Transition>();
+		Set<Transition> toadd = new HashSet<Transition>();
+		for( Transition t : ts) {
+			if (t.howManyInArcs() >= IUtils.MORE_THAN_ONE
+					&& t.howManyOutArcs() >= IUtils.MORE_THAN_ONE) {
+				
+				toremove.add(t);
+				Transition t1 = new Transition(t.getLabel()+"_1");
+				Transition t2 = new Transition(t.getLabel()+"_2");
+				Place p = new Place("p"+t.getLabel()+"_12");
+				Arc a1 = new Arc(t1, p);
+				Arc a2 = new Arc(p, t2);
+				for (Arc tin : t.getInArcs()) {
+					tin.setOutNode(t1);
+				}
+				for (Arc tout : t.getOutArcs()) {
+					tout.setInNode(t2);
+				}
+				addArc(a1);
+				addArc(a2);
+				ps.add(p);
+				places.put(p.getLabel(), p);
+				transitions.put(t1.getLabel(), t1);
+				transitions.put(t2.getLabel(), t2);
+				transitions.remove(t.getLabel());
+				toadd.add(t1);
+				toadd.add(t2);
+			}
+		}
+		ts.removeAll(toremove);
+		ts.addAll(toadd);
 	}
 }

@@ -76,6 +76,7 @@ public class PNMLParser {
 			
 			Net pn = createPetriNetModel(placeMap, transitionMap, arcMap);
 			pn.setName(netname);
+			pn.replaceMultiInOutTransitions();
 			return pn;
 			
 		} catch (FileNotFoundException e) {
