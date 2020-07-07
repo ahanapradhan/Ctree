@@ -26,6 +26,9 @@ public class TestUtils {
 	
 	public final static String[] PETRINETS_FOR_DIRECT_CTREE = {"seq1.xml", "xorctree1.xml", "xorctree2.xml", 
 			"loopctree1.xml", "loopctree2.xml", "xorctree3.xml"};
+	
+	public final static String[] MULTI_INOUT_NETS = {"uand1.xml","multiInOutT1.xml","multiInOutT2.xml"};
+	public final static String[] COMPLEX_NETS = {"unbalancedXOR1.xml", "unbalancedXOR2.xml"};
 
 	public final static String dotFile = "smallgraph.dot";
 	public final static String outputFile = "ctree.png";
