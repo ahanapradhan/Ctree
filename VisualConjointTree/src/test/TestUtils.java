@@ -15,6 +15,7 @@ import org.junit.jupiter.api.Test;
 import parser.CtreeBuilderByECWS;
 import petrinetmodel.Net;
 import treemodel.CNode;
+import treemodel.Ctree;
 
 public class TestUtils {
 
@@ -226,4 +227,19 @@ public class TestUtils {
 		TestUtils.deleteFile(outputFile);
 	}
 
+	public static void drawCtreeAndShow(Ctree net) {
+		String mtext = net.printCtreeForDot();
+		File mf = new File(dotFile);
+		TestUtils.createSampleDotFile(mf, mtext);
+		ProcessBuilder pb = new ProcessBuilder();
+		TestUtils.runDot(dotFile, pb, outputFile);
+		TestUtils.showDotGraphMac(pb, outputFile);
+		try {
+			TimeUnit.SECONDS.sleep(3);
+		} catch (InterruptedException e) {
+			fail();
+		}	
+		TestUtils.deleteFile(dotFile);
+		TestUtils.deleteFile(outputFile);
+	}
 }

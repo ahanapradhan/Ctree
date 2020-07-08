@@ -2,9 +2,11 @@ package test;
 
 import org.junit.jupiter.api.Test;
 
+import parser.FoldedNetToCtreeBuilder;
 import parser.NetFolder;
 import parser.PNMLParser;
 import petrinetmodel.Net;
+import treemodel.Ctree;
 
 public class NetFolderTest {
 
@@ -30,6 +32,8 @@ public class NetFolderTest {
 			TestUtils.drawNetAndShow(m1);
 			NetFolder.fold(m1);
 			TestUtils.drawNetAndShow(m1);
+			Ctree tree = FoldedNetToCtreeBuilder.buildCtree(m1);
+			TestUtils.drawCtreeAndShow(tree);
 			System.out.println("...done");
 		}
 	}
@@ -43,6 +47,8 @@ public class NetFolderTest {
 			TestUtils.drawNetAndShow(m1);
 			NetFolder.fold(m1);
 			TestUtils.drawNetAndShow(m1);
+			Ctree tree = FoldedNetToCtreeBuilder.buildCtree(m1);
+			TestUtils.drawCtreeAndShow(tree);
 			System.out.println("...done");
 		}
 	}
