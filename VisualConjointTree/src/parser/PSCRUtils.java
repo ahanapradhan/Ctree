@@ -8,7 +8,7 @@ import treemodel.Ctree;
 import treemodel.GCSUtils;
 import util.IUtils;
 
-public class PSCR {
+public interface PSCRUtils {
 
 	public static Set<String> getPSCR(String oldnetfilename, String newnetfilename) {
 		Net oldnet = PNMLParser.readPIPExmlFile(oldnetfilename);

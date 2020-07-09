@@ -3,7 +3,7 @@ package treemodel;
 import java.util.HashSet;
 import java.util.Set;
 
-public class GCSUtils {
+public interface GCSUtils {
 
 	public static Ctree getGCS(Ctree tree, String place) {
 		Ctree gcs = new Ctree(tree);
