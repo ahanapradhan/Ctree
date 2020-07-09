@@ -19,4 +19,8 @@ public interface IUtils {
 	final int SECOND_INDEX = 1;
 	final int ZERO = 0;
 	final int ONE = 1;
+	final int MORE_THAN_ONE = 2;
+	
+	final int SINGLE_IN_OUT = 1;
+	final int SINGLE_IN_MULTI_OUT = 2;
 }

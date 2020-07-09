@@ -16,7 +16,7 @@ import petrinetmodel.Place;
 import petrinetmodel.Transition;
 import util.IUtils;
 
-public class PNMLParser {
+public interface PNMLParser {
 	
 	
 	/*

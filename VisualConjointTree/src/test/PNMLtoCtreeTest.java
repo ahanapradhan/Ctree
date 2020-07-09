@@ -6,10 +6,10 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import parser.FoldedNetToCtreeBuilder;
+import parser.PNMLParser;
 import petrinetmodel.Net;
 import treemodel.Ctree;
-import parser.CtreeBuilderByECWS;
-import parser.PNMLParser;
 
 public class PNMLtoCtreeTest {
 
@@ -33,10 +33,8 @@ public class PNMLtoCtreeTest {
 			ProcessBuilder pb = new ProcessBuilder();
 			TestUtils.runDot(TestUtils.netdotfile, pb, TestUtils.netimgfile);
 
-			String ecws = m.getECWS();
-			System.out.println(ecws);
-
-			Ctree tree = CtreeBuilderByECWS.buildCtree(ecws, m.getName());
+			Ctree tree = FoldedNetToCtreeBuilder.buildCtree(m);
+			tree.setName(m.getName());
 
 			String intext = tree.printCtreeForDot();
 

@@ -13,16 +13,22 @@ import treemodel.ANode;
 import treemodel.AbstractTreeNode;
 import treemodel.CNode;
 import treemodel.Ctree;
+import util.IUtils;
 
 public interface FoldedNetToCtreeBuilder {
 	
-	public static Ctree buildCtree(Net net) {
+	public static Ctree buildCtree(Net neto) {
+		Net net = new Net(neto);
+		NetFolder.fold(net);
 		Ctree tree = new Ctree();
 		Map<Node, Integer> map = new HashMap<Node, Integer>();
 		for(Place p : net.getPlaces()) {
 			CNode cn = buildCNode(p);
 			map.put(p, cn.getId());
 			tree.addNode(cn);
+			if (p.howManyInArcs() == IUtils.ZERO) {
+				tree.setRoot(cn);
+			}
 		}
 		for(Transition t : net.getTransitions()) {
 			ANode an = buildANode(t);

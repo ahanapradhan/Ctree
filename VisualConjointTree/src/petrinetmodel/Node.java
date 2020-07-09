@@ -8,8 +8,6 @@ import java.util.Set;
 import util.IUtils;
 
 public abstract class Node {
-	
-	String ecws = null;
     String label;
     List<Arc> inArcs = null;
 	List<Arc> outArcs = null;
@@ -134,53 +132,5 @@ public abstract class Node {
 
 	public List<Arc> getOutArcs() {
 		return outArcs;
-	}
-
-	public String getECWS() {
-		if (ecws == null) {
-			ecws = buildECWS();
-		}
-		return ecws;
-	}
-
-	protected String buildECWS() {
-		StringBuilder sb = new StringBuilder();
-		if (inArcs != null) {
-			handleInArcs(sb);
-		} else {
-			sb.append(this.getLabel() + " ");
-		}
-		if (outArcs != null) {
-		    handleOutArcs(sb);
-		}
-		return sb.toString();
-	}
-	
-	private void handleOutArcs(StringBuilder sb) {
-		if (unvisitedInArcs == IUtils.ZERO) {
-			if (outArcs.size() == IUtils.ONE) {
-				sb.append(outArcs.get(IUtils.ONLY_INDEX).getOutNode().buildECWS());
-			} else if (outArcs.size() > IUtils.ONE) {
-				for (Arc a : outArcs) {
-					sb.append(getFork());
-					sb.append(a.getOutNode().buildECWS());
-				}
-			}
-		}
-	}
-	
-	private void handleInArcs(StringBuilder sb) {
-		if (inArcs.size() > IUtils.ONE && unvisitedInArcs > IUtils.ONE) {
-			sb.append(getJoin());
-			unvisitedInArcs--;
-		} else if (inArcs.size() > IUtils.ONE && unvisitedInArcs == IUtils.ONE) {
-			sb.append(getJoin() + this.getLabel() + " ");
-			unvisitedInArcs--;
-		}
-		
-		if (inArcs.size() == IUtils.ONE) {
-			sb.append(this.getLabel() + " ");
-			unvisitedInArcs--;
-		}
 	}
 }

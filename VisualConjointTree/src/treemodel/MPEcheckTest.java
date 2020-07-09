@@ -12,11 +12,11 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import petrinetmodel.Net;
-import test.TestUtils;
-import parser.CtreeBuilderByECWS;
+import parser.FoldedNetToCtreeBuilder;
 import parser.PNMLParser;
 import parser.PSCR;
+import petrinetmodel.Net;
+import test.TestUtils;
 
 public class MPEcheckTest {
 	final static String bigdot = "big.dot";
@@ -85,8 +85,8 @@ public class MPEcheckTest {
 		TestUtils.runDot(dotfile, pb, imgfile);
 		
 
-		String ecws = m.getECWS();
-		Ctree tree = CtreeBuilderByECWS.buildCtree(ecws, m.getName());
+		Ctree tree = FoldedNetToCtreeBuilder.buildCtree(m);
+		tree.setName(m.getName());
 		intext = tree.printCtreeForDot();
 		f = new File(ctdot);
 		TestUtils.createSampleDotFile(f, intext);
@@ -126,9 +126,11 @@ public class MPEcheckTest {
 	
 	private void check_MPE_bothways(String bignet, String smallnet) {
 		Net big = PNMLParser.readPIPExmlFile(TestUtils.INPUT_NETS_DIR + bignet);
-		Ctree bt = CtreeBuilderByECWS.buildCtree(big.getECWS(), big.getName());
+		Ctree bt = FoldedNetToCtreeBuilder.buildCtree(big);
+		bt.setName(big.getName());
 		Net small = PNMLParser.readPIPExmlFile(TestUtils.INPUT_NETS_DIR + smallnet);
-		Ctree st = CtreeBuilderByECWS.buildCtree(small.getECWS(), small.getName());
+		Ctree st = FoldedNetToCtreeBuilder.buildCtree(small);
+		st.setName(small.getName());
 		assertTrue(GCSUtils.doesHaveMPE(st, bt));
 		assertFalse(GCSUtils.doesHaveMPE(bt, st));
 		assertTrue(GCSUtils.doesHaveMPE(st, st));
@@ -137,9 +139,11 @@ public class MPEcheckTest {
 	
 	private void check_noMPE_bothways(String bignet, String smallnet) {
 		Net big = PNMLParser.readPIPExmlFile(TestUtils.INPUT_NETS_DIR + bignet);
-		Ctree bt = CtreeBuilderByECWS.buildCtree(big.getECWS(), big.getName());
+		Ctree bt = FoldedNetToCtreeBuilder.buildCtree(big);
+		bt.setName(big.getName());
 		Net small = PNMLParser.readPIPExmlFile(TestUtils.INPUT_NETS_DIR + smallnet);
-		Ctree st = CtreeBuilderByECWS.buildCtree(small.getECWS(), small.getName());
+		Ctree st = FoldedNetToCtreeBuilder.buildCtree(small);
+		st.setName(small.getName());
 		assertFalse(GCSUtils.doesHaveMPE(st, bt));
 		assertFalse(GCSUtils.doesHaveMPE(bt, st));
 	}

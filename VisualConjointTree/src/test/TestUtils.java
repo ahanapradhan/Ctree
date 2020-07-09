@@ -6,15 +6,12 @@ import static org.junit.Assert.fail;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
-import java.util.List;
 import java.util.Scanner;
 import java.util.concurrent.TimeUnit;
 
 import org.junit.jupiter.api.Test;
 
-import parser.CtreeBuilderByECWS;
 import petrinetmodel.Net;
-import treemodel.CNode;
 import treemodel.Ctree;
 
 public class TestUtils {
@@ -192,23 +189,6 @@ public class TestUtils {
 		} catch (Exception e) {
 			fail();
 		}
-	}
-
-	public static String getPackets(String ecws) {
-		String[] items = ecws.split(" ");
-		List<Object> list = CtreeBuilderByECWS.buildPackets(items);
-		StringBuilder sb = new StringBuilder();
-		for (Object l : list) {
-			if (l instanceof CNode) {
-				CNode node = (CNode) l;
-				sb.append(node.getLabel());
-			} else if (l instanceof String) {
-				sb.append(" " + l + " ");
-			} else {
-				sb.append("-");
-			}
-		}
-		return sb.toString();
 	}
 	
 	public static void drawNetAndShow(Net net) {

@@ -17,10 +17,10 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import parser.FoldedNetToCtreeBuilder;
+import parser.PNMLParser;
 import petrinetmodel.Net;
 import test.TestUtils;
-import parser.CtreeBuilderByECWS;
-import parser.PNMLParser;
 
 class GCSUtilsTest {
 	static String netdotfile = "digraph.dot";
@@ -48,8 +48,8 @@ class GCSUtilsTest {
 	@Test
 	public void test_breakoffSetTest() {
 		Net m = PNMLParser.readPIPExmlFile(TestUtils.INPUT_NETS_DIR + TestUtils.PETRINET_XML_FILES[6]);
-		String ecws = m.getECWS();
-		Ctree tree = CtreeBuilderByECWS.buildCtree(ecws, m.getName());
+		Ctree tree = FoldedNetToCtreeBuilder.buildCtree(m);
+		tree.setName(m.getName());
 		tree.setName("Net1");
 
 		ProcessBuilder pb = new ProcessBuilder();
@@ -110,12 +110,8 @@ class GCSUtilsTest {
 		TestUtils.runDot(netdotfile, pb, netimgfile);
 		TestUtils.showDotGraphMac(pb, netimgfile);
 
-		String ecws = m.getECWS();
-		System.out.println(ecws);
-
-		Ctree tree = CtreeBuilderByECWS.buildCtree(ecws, m.getName());
-		
-		tree.setName("Net1");
+		Ctree tree = FoldedNetToCtreeBuilder.buildCtree(m);
+		tree.setName(m.getName());
 		String intext = tree.printCtreeForDot();
 
 
@@ -164,11 +160,7 @@ class GCSUtilsTest {
 		TestUtils.runDot(netdotfile, pb, netimgfile);
 		TestUtils.showDotGraphMac(pb, netimgfile);
 
-		String ecws = m.getECWS();
-		System.out.println(ecws);
-
-		Ctree tree = CtreeBuilderByECWS.buildCtree(ecws, m.getName());
-		
+		Ctree tree = FoldedNetToCtreeBuilder.buildCtree(m);		
 		tree.setName("Net1");
 		String intext = tree.printCtreeForDot();
 

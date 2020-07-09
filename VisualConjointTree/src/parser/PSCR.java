@@ -14,8 +14,10 @@ public class PSCR {
 		Net oldnet = PNMLParser.readPIPExmlFile(oldnetfilename);
 		Net newnet = PNMLParser.readPIPExmlFile(newnetfilename);
 
-		Ctree oldtree = CtreeBuilderByECWS.buildCtree(oldnet.getECWS(), oldnet.getName());
-		Ctree newtree = CtreeBuilderByECWS.buildCtree(newnet.getECWS(), newnet.getName());
+		Ctree oldtree = FoldedNetToCtreeBuilder.buildCtree(oldnet);
+		oldtree.setName(oldnet.getName());
+		Ctree newtree = FoldedNetToCtreeBuilder.buildCtree(newnet);
+		newtree.setName(newnet.getName());
 
 		Set<String> CRr = getRemovalSet(oldtree, newtree);
 		Set<String> CRlc = getLostConcurrencySet(oldtree, newtree);

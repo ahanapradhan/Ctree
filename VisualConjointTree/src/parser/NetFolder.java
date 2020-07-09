@@ -74,7 +74,7 @@ public interface NetFolder {
 	 * 
 	 * @param net
 	 */
-	public static void foldOneInMultiOutTransitions2(Net net) {
+	public static void foldOneInMultiOutTransitions(Net net) {
 		Queue<Place> unfoldedPlaces = new LinkedList<Place>();
 		Queue<Place> places = new LinkedList<Place>(net.getPlaces());
 		Set<Place> foldedPlaces = null;
@@ -114,5 +114,10 @@ public interface NetFolder {
 			}
 			// System.out.println("counter " + counter+" still going on...");
 		} while (true);
+	}
+	
+	public static void fold(Net net) {
+		foldOneInOneOutTransitions(net);
+		foldOneInMultiOutTransitions(net);
 	}
 }

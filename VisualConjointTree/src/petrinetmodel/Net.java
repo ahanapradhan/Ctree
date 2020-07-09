@@ -228,19 +228,6 @@ public class Net {
 			sb.append("    \"" + a.getInNode().getLabel() + "\" -> \"" + a.getOutNode().getLabel() + "\";\n");
 		}
 		sb.append("}\n");
-		// sb.append("```\n");
-		return sb.toString();
-	}
-
-	public String getECWS() {
-		StringBuilder sb = new StringBuilder();
-		
-		for(Place p : ps) {
-			if (p.getInArcs() == null) {
-				// source place
-				sb.append(p.getECWS());				
-			}
-		}	
 		return sb.toString();
 	}
 
