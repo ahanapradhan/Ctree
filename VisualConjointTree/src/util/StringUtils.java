@@ -37,10 +37,16 @@ public class StringUtils {
 		Set<String> uniqPlaces = new HashSet<String>(Arrays.asList(places));
 		StringBuilder  sb = new StringBuilder();
 		String prefix = "";
-		for(String p : uniqPlaces) {
-			sb.append(prefix+p);
-			prefix = ",";
+		for (String p : uniqPlaces) {
+			if (notDummyPlace(p)) {
+				sb.append(prefix + p);
+				prefix = ",";
+			}
 		}
 		return sb.toString();
+	}
+
+	private static boolean notDummyPlace(String p) {
+		return !p.contains("_");
 	}
 }

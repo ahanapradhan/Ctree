@@ -4,6 +4,46 @@ import java.util.HashSet;
 import java.util.Set;
 
 public interface GCSUtils {
+	
+	public static Set<String> generateMarkings(Ctree tree){
+		Set<Set<String>> ms = generateMarkingSet(tree);
+		Set<String> markings = new HashSet<String>();
+		for (Set<String> m : ms) {
+			StringBuilder sb = new StringBuilder();
+			String prefix = "";
+			for(String s : m) {
+				sb.append(prefix);
+				sb.append(s);
+				prefix = ",";
+			}
+			markings.add(sb.toString());
+		}
+		return markings;
+	}
+
+	private static Set<Set<String>> generateMarkingSet(Ctree tree) { // testing pending
+		Set<Set<String>> mss = null;
+		Set<Set<String>> finalSet = new HashSet<Set<String>>();
+		Set<String> ps = tree.getAllPlaces();
+		if (ps == null || ps.isEmpty()) {
+			return null;
+		}
+		for (String p : ps) {
+			mss = generateMarkingSet(getGCS(tree, p));
+			if (mss != null) {
+				for (Set<String> s : mss) {
+					s.add(p);
+				}
+			} else {
+				mss = new HashSet<Set<String>>();
+				Set<String> ms = new HashSet<String>();
+				ms.add(p);
+				mss.add(ms);
+			}
+			finalSet.addAll(mss);
+		}
+		return finalSet;
+	}
 
 	public static Ctree getGCS(Ctree tree, String place) {
 		Ctree gcs = new Ctree(tree);
