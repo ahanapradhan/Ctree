@@ -105,6 +105,10 @@ public class Net {
 		for (Arc a : arcstoremove) {
 			arcs.remove(a);
 		}
+		for (Transition t : ts) {
+			t.removeFromPreNodes(p);
+			t.removeFromPostNodes(p);
+		}
 	}
 
 	public void removeTransition(Transition t) {
@@ -127,6 +131,11 @@ public class Net {
 		}
 		for (Arc a : arcstoremove) {
 			arcs.remove(a);
+		}
+		
+		for (Place p : ps) {
+			p.removeFromPreNodes(t);
+			p.removeFromPostNodes(t);
 		}
 	}
 

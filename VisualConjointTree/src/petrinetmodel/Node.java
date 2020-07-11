@@ -133,4 +133,32 @@ public abstract class Node {
 	public List<Arc> getOutArcs() {
 		return outArcs;
 	}
+	
+	public void removeFromPreNodes(Node n) {
+		if (getPreNodes() == null || preNodes.isEmpty()) {
+			return;
+		}
+		Set<Arc> preArcsToRemove = new HashSet<Arc>();
+		for(Arc a : inArcs) {
+			Node pren = a.getInNode();
+			if(pren.getLabel().equals(n.getLabel())) {
+				preArcsToRemove.add(a);
+			}
+		}
+		inArcs.removeAll(preArcsToRemove);
+	}
+	
+	public void removeFromPostNodes(Node n) {
+		if (getPostNodes() == null || postNodes.isEmpty()) {
+			return;
+		}
+		Set<Arc> postArcsToRemove = new HashSet<Arc>();
+		for(Arc a : outArcs) {
+			Node postn = a.getInNode();
+			if(postn.getLabel().equals(n.getLabel())) {
+				postArcsToRemove.add(a);
+			}
+		}
+		outArcs.removeAll(postArcsToRemove);
+	}
 }
