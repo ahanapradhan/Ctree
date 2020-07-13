@@ -8,23 +8,28 @@ import util.IUtils;
 public abstract class AbstractTreeNode {
 	static int uniq = 0;
 	int id;
-	int parentid;
 	List<Integer> childrenids;
+	List<Integer> parentids;
 
 	public AbstractTreeNode() {
 		id = uniq++;
-		parentid = -1;
 		childrenids = null;
+		parentids = null;
 	}
 
 	public AbstractTreeNode(AbstractTreeNode a) {
 		// only used for copy construction
 		id = a.id;
-		parentid = a.parentid;
 		if (a.childrenids != null) {
 			childrenids = new ArrayList<Integer>(a.childrenids);
 		} else {
 			childrenids = null;
+		}
+		
+		if (a.parentids != null) {
+			parentids = new ArrayList<Integer>(a.parentids);
+		} else {
+			parentids = null;
 		}
 	}
 	
@@ -37,23 +42,26 @@ public abstract class AbstractTreeNode {
 		return id;
 	}
 
-	public void setParent(int i) {
-		parentid = i;
-	}
-
-	public int getParent() {
-		return parentid;
-	}
-
 	public void addChild(int i) { // adds another CNode as child
 		if (childrenids == null) {
 			childrenids = new ArrayList<Integer>();
 		}
 		childrenids.add(i);
 	}
+	
+	public void addParent(int i) { 
+		if (parentids == null) {
+			parentids = new ArrayList<Integer>();
+		}
+		parentids.add(i);
+	}
 
 	public List<Integer> getChildrenIds() {
 		return childrenids;
+	}
+	
+	public List<Integer> getParentIds() {
+		return parentids;
 	}
 
 	public int howManyChildren() {

@@ -71,13 +71,6 @@ public class Ctree {
 		}
 		return null;
 	}
-	
-	public AbstractTreeNode getParentNode(AbstractTreeNode n) {
-		if (n == null) {
-			return null;
-		}
-		return getNodebyId(n.getParent());
-	}
 
 	public int howManyNodes() {
 		return nodes.size();
@@ -87,10 +80,12 @@ public class Ctree {
 		StringBuilder sb = new StringBuilder();
 		sb.append("digraph G {\n    label=\"" + label + "\";\n");
 		for (AbstractTreeNode n : nodes) {
-			if (n.getParent() != -1) {
-				sb.append("    " + n.getParent() + " -> " + n.getId() + ";\n");
-				sb.append("    " + n.getParent() + " [label=\"" + getNodebyId(n.getParent()).getVisLabel() + "\"];\n");
-				sb.append("    " + n.getId() + " [label=\"" + n.getVisLabel() + "\"];\n");
+			if (n.getParentIds() != null) {
+				for (int pid : n.getParentIds()) {
+					sb.append("    " + pid + " -> " + n.getId() + ";\n");
+					sb.append("    " + pid + " [label=\"" + getNodebyId(pid).getVisLabel() + "\"];\n");
+					sb.append("    " + n.getId() + " [label=\"" + n.getVisLabel() + "\"];\n");
+				}
 			} else {
 				sb.append("    " + n.getId() + ";\n");
 				sb.append("    " + n.getId() + " [label=\"" + n.getVisLabel() + "\"];\n");
@@ -112,13 +107,28 @@ public class Ctree {
 		return label;
 	}
 
+	/**
+	 * Have to fix this method
+	 * One node may have multiple parents. Have to remove itself from each of them.
+	 * 
+	 * @param abstractTreeNode
+	 */
 	protected void removeSubtreeOf(AbstractTreeNode abstractTreeNode) { // including cn itself
-		AbstractTreeNode pn = getNodebyId(abstractTreeNode.getParent());
-		if (pn != null) {
-			pn.removeChild(abstractTreeNode.getId());
+		List<Integer> pids = abstractTreeNode.getParentIds();
+		if (pids != null && !pids.isEmpty()) {
+			for (int pid : pids) {
+				AbstractTreeNode pn = getNodebyId(pid);
+				if (pn != null) {
+					pn.removeChild(abstractTreeNode.getId());
+				}
+			}
 		}
 		Set<AbstractTreeNode> subtreeNodes = getSubtreeNodes(abstractTreeNode);
-		nodes.removeAll(subtreeNodes);
+		for(AbstractTreeNode absn : subtreeNodes) {
+			if (!absn.getParentIds().contains(abstractTreeNode.getId())) {
+				absn.removeAllPlaces();
+			}
+		}
 	}
 
 	private Set<AbstractTreeNode> getSubtreeNodes(AbstractTreeNode n) {
@@ -126,35 +136,58 @@ public class Ctree {
 		List<Integer> childern = n.getChildrenIds();
 		if (childern != null) {
 			for (Integer ch : childern) {
-				ret.addAll(getSubtreeNodes(getNodebyId(ch)));
+				if (getNodebyId(ch) != null) {
+					ret.addAll(getSubtreeNodes(getNodebyId(ch)));
+				}
 			}
 		}
 		ret.add(n);
 		return ret;
 	}
 
+	/**
+	 * Have to fix this method
+	 * Path till root through each parent has to be cleared
+	 * 
+	 * @param cn
+	 */
 	protected void clearTillRoot(AbstractTreeNode cn) {
 		// cn has been deleted from tree
 		// remove/clear only the ancestors
-		//start from parent of cn
-		AbstractTreeNode pn = getNodebyId(cn.getParent());
-		
-		while (pn != null) {
+		// start from parent of cn
+
+		if (cn.getParentIds() == null || cn.getParentIds().isEmpty()) {
+			return;
+		}
+		Queue<Integer> pids = new LinkedList<Integer>();
+		Set<Integer> donepids = new HashSet<Integer>();
+		pids.addAll(cn.getParentIds());
+		while (!pids.isEmpty()) {
+			int pid = pids.poll();
+			System.out.println("pid " + pid );
+			donepids.add(pid);
+			AbstractTreeNode pn = getNodebyId(pid);
+			if (pn == null) {
+				System.out.println("pid " + pid +" caught");
+			}
 			pn.removeAllPlaces();
 			if (pn instanceof CNode) {
 				List<Integer> allch = new ArrayList<>(pn.getChildrenIds());
-			    pn.removeOtherChildrenButMe(cn);
-			    List<Integer> me = new ArrayList<>(pn.getChildrenIds());
-			    allch.removeAll(me);
-			    for(Integer i : allch) {
-			    	removeSubtreeOf(getNodebyId(i));
-			    }
+				pn.removeOtherChildrenButMe(cn);
+				List<Integer> me = new ArrayList<>(pn.getChildrenIds());
+				allch.removeAll(me);
+				for (Integer i : allch) {
+					removeSubtreeOf(getNodebyId(i));
+				}
 			}
-			cn = pn;
-			pn = getNodebyId(pn.getParent());
+			if (pn.getParentIds() != null) {
+				for (int i : pn.getParentIds()) {
+					if (!pids.contains(i) && !donepids.contains(i)) {
+						pids.add(i);
+					}
+				}
+			}
 		}
-		// clear the line of ancestors
-		
 	}
 
 	protected void deletePlaces(Set<String> ps) {

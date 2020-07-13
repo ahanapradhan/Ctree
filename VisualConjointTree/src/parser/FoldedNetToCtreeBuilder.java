@@ -49,7 +49,7 @@ public interface FoldedNetToCtreeBuilder {
 			AbstractTreeNode parent = tmap.get(parentId);
 			AbstractTreeNode child = tmap.get(childId);
 			parent.addChild(childId);
-			child.setParent(parentId);		
+			child.addParent(parentId);
 		}
 		
 		return tree;

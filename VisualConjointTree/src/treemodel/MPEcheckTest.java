@@ -14,7 +14,7 @@ import org.junit.jupiter.api.Test;
 
 import parser.FoldedNetToCtreeBuilder;
 import parser.PNMLParser;
-import parser.PSCR;
+import parser.PSCRUtils;
 import petrinetmodel.Net;
 import test.TestUtils;
 
@@ -168,7 +168,7 @@ public class MPEcheckTest {
 	@Test
 	public void test_PSCRtest() {
 		String[] twonets = {"andnet55.xml", "andnet5.xml"};
-		Set<String> pscr = PSCR.getPSCR(TestUtils.INPUT_NETS_DIR + twonets[0], TestUtils.INPUT_NETS_DIR + twonets[1]);
+		Set<String> pscr = PSCRUtils.getPSCR(TestUtils.INPUT_NETS_DIR + twonets[0], TestUtils.INPUT_NETS_DIR + twonets[1]);
 		createNetAndCtreeImg(twonets[1], bigdot, bigimg, bigctdot, bigctimg, null, "New Net");
 		createNetAndCtreeImg(twonets[0], smalldot, smallimg, smallctdot, smallctimg, pscr, "Old Net");
 		createAllImageDot(bigimg, smallimg, bigctimg, smallctimg);
