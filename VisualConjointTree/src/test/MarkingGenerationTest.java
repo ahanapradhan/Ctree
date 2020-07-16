@@ -1,8 +1,10 @@
 package test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -41,6 +43,10 @@ public class MarkingGenerationTest {
     	resultSet.put("xorctree1.xml", 6);
     	resultSet.put("xorctree2.xml", 7);
     	resultSet.put("xorctree3.xml", 5);
+    	resultSet.put("small1.xml", 5);
+    	resultSet.put("small2.xml", 8);
+    	resultSet.put("multiinOutT1.xml", 5);
+    	resultSet.put("multiinOutT2.xml", 6);
     }
     
     void test_marking_enumeration() {
@@ -60,10 +66,37 @@ public class MarkingGenerationTest {
 	@Test
 	void test_marking_generation1() {
 
-		Net m = PNMLParser.readPIPExmlFile(TestUtils.INPUT_NETS_DIR + "unbalancedXOR1.xml");
+		Net m = PNMLParser.readPIPExmlFile(TestUtils.INPUT_NETS_DIR + "andnet45.xml");
 		Net m1 = new Net(m);
 		Ctree tree = FoldedNetToCtreeBuilder.buildCtree(m1);
-		TestUtils.drawCtreeAndShow(tree);
+		//TestUtils.drawCtreeAndShow(tree);
+		
+		Ctree gcs = GCSUtils.getGCS(tree, "p14");
+		Set<String> places = gcs.getAllPlaces();
+		assertEquals(places.size(),6);
+		Set<String> pla = new HashSet<String>();
+		pla.add("p1");
+		pla.add("p3");
+		pla.add("p7");
+		pla.add("p9");
+		pla.add("p16");
+		pla.add("p17");
+		places.removeAll(pla);
+		assertTrue(places.isEmpty());
+		//TestUtils.drawCtreeAndShow(gcs);
+		
+		Ctree ctree2 = GCSUtils.getGCS(gcs, "p1");
+		places = ctree2.getAllPlaces();
+		assertEquals(places.size(),4);
+		pla.clear();
+		pla.add("p7");
+		pla.add("p9");
+		pla.add("p16");
+		pla.add("p17");
+		places.removeAll(pla);
+		assertTrue(places.isEmpty());
+		//TestUtils.drawCtreeAndShow(ctree2);
+		
 		Set<String> markings = GCSUtils.generateMarkings(tree);	
 		System.out.println("total "+markings.size()+ " markings");
 	}
@@ -71,7 +104,7 @@ public class MarkingGenerationTest {
 	@Test
 	void test_marking_generation2() {
 
-		Net m = PNMLParser.readPIPExmlFile(TestUtils.INPUT_NETS_DIR + "unbalancedXOR2.xml");
+		Net m = PNMLParser.readPIPExmlFile(TestUtils.INPUT_NETS_DIR + "andnet45.xml");
 		Net m1 = new Net(m);
 		Ctree tree = FoldedNetToCtreeBuilder.buildCtree(m1);
 		TestUtils.drawCtreeAndShow(tree);

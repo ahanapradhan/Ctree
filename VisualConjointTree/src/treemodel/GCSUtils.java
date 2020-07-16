@@ -51,8 +51,8 @@ public interface GCSUtils {
 			if (n instanceof CNode) {
 				CNode cn = (CNode) n;
 				if (cn.doesItHaveIt(place)) {
-					gcs.removeSubtreeOf(cn);
-					gcs.clearTillRoot(cn);
+					gcs.removeNonConcurrentPlaces(cn);
+					gcs.cleanGCS();
 					break;
 				}
 			}

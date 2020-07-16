@@ -1,6 +1,5 @@
 package treemodel;
 
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -106,87 +105,60 @@ public class Ctree {
 	public String getName() {
 		return label;
 	}
-
-	/**
-	 * Have to fix this method
-	 * One node may have multiple parents. Have to remove itself from each of them.
-	 * 
-	 * @param abstractTreeNode
-	 */
-	protected void removeSubtreeOf(AbstractTreeNode abstractTreeNode) { // including cn itself
-		List<Integer> pids = abstractTreeNode.getParentIds();
-		if (pids != null && !pids.isEmpty()) {
-			for (int pid : pids) {
-				AbstractTreeNode pn = getNodebyId(pid);
-				if (pn != null) {
-					pn.removeChild(abstractTreeNode.getId());
-				}
-			}
-		}
-		Set<AbstractTreeNode> subtreeNodes = getSubtreeNodes(abstractTreeNode);
-		for(AbstractTreeNode absn : subtreeNodes) {
-			if (!absn.getParentIds().contains(abstractTreeNode.getId())) {
-				absn.removeAllPlaces();
-			}
-		}
+	
+	protected void cleanGCS() {
+		// delete the nodes which dont have any place in post-nodes
+		//this is for memory efficiency
 	}
 
-	private Set<AbstractTreeNode> getSubtreeNodes(AbstractTreeNode n) {
-		Set<AbstractTreeNode> ret = new HashSet<AbstractTreeNode>();
-		List<Integer> childern = n.getChildrenIds();
-		if (childern != null) {
-			for (Integer ch : childern) {
-				if (getNodebyId(ch) != null) {
-					ret.addAll(getSubtreeNodes(getNodebyId(ch)));
-				}
-			}
+	private Set<Integer> getAncestors(Integer nodeid) {
+		Set<Integer> ancestors = new HashSet<Integer>();
+		AbstractTreeNode node = getNodebyId(nodeid);
+		if (node.getParentIds() != null) {
+			ancestors.addAll(node.getParentIds());
 		}
-		ret.add(n);
-		return ret;
+		Set<Integer> others = new HashSet<Integer>();
+		for (int i : ancestors) {
+			others.addAll(getAncestors(i));
+		}
+		ancestors.addAll(others);
+		return ancestors;
 	}
 
-	/**
-	 * Have to fix this method
-	 * Path till root through each parent has to be cleared
-	 * 
-	 * @param cn
-	 */
-	protected void clearTillRoot(AbstractTreeNode cn) {
-		// cn has been deleted from tree
-		// remove/clear only the ancestors
-		// start from parent of cn
-
-		if (cn.getParentIds() == null || cn.getParentIds().isEmpty()) {
-			return;
+	private Set<Integer> getDescendants(Integer nodeid) {
+		Set<Integer> descandants = new HashSet<Integer>();
+		AbstractTreeNode node = getNodebyId(nodeid);
+		if (node.getChildrenIds() != null) {
+			descandants.addAll(node.getChildrenIds());
 		}
-		Queue<Integer> pids = new LinkedList<Integer>();
-		Set<Integer> donepids = new HashSet<Integer>();
-		pids.addAll(cn.getParentIds());
-		while (!pids.isEmpty()) {
-			int pid = pids.poll();
-			System.out.println("pid " + pid );
-			donepids.add(pid);
-			AbstractTreeNode pn = getNodebyId(pid);
-			if (pn == null) {
-				System.out.println("pid " + pid +" caught");
-			}
-			pn.removeAllPlaces();
-			if (pn instanceof CNode) {
-				List<Integer> allch = new ArrayList<>(pn.getChildrenIds());
-				pn.removeOtherChildrenButMe(cn);
-				List<Integer> me = new ArrayList<>(pn.getChildrenIds());
-				allch.removeAll(me);
-				for (Integer i : allch) {
-					removeSubtreeOf(getNodebyId(i));
+		Set<Integer> others = new HashSet<Integer>();
+		for (int i : descandants) {
+			others.addAll(getDescendants(i));
+		}
+		descandants.addAll(others);
+		return descandants;
+	}
+
+	protected void removeNonConcurrentPlaces(AbstractTreeNode node) {
+		node.removeAllPlaces();
+		Set<Integer> ancestors = getAncestors(node.getId());
+		Set<Integer> descendants = getDescendants(node.getId());
+		Set<Integer> others = new HashSet<Integer>();
+		for (int i : ancestors) {
+			if (getNodebyId(i) instanceof CNode) {
+				Set<Integer> d = new HashSet<Integer>(getNodebyId(i).getChildrenIds());
+				d.removeAll(ancestors);
+				for(Integer k : d) {
+					others.addAll(getDescendants(k));
 				}
+				others.addAll(d);
 			}
-			if (pn.getParentIds() != null) {
-				for (int i : pn.getParentIds()) {
-					if (!pids.contains(i) && !donepids.contains(i)) {
-						pids.add(i);
-					}
-				}
-			}
+		}
+		ancestors.addAll(descendants);
+		ancestors.addAll(others);
+		for (int i : ancestors) {
+			AbstractTreeNode n = getNodebyId(i);
+			n.removeAllPlaces();
 		}
 	}
 
@@ -228,7 +200,7 @@ public class Ctree {
 		return isDysfunctionalTree();
 	}
 
-	protected Set<String> getAllPlaces() {
+	public Set<String> getAllPlaces() {
 		Set<String> places = new HashSet<String>();
 		for (AbstractTreeNode n : nodes) {
 			if (n instanceof CNode) {
