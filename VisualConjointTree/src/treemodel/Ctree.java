@@ -115,7 +115,13 @@ public class Ctree {
 		Set<Integer> ancestors = new HashSet<Integer>();
 		AbstractTreeNode node = getNodebyId(nodeid);
 		if (node.getParentIds() != null) {
-			ancestors.addAll(node.getParentIds());
+			List<Integer> parents = node.getParentIds();
+			for(int i: parents) {
+				if (!getNodebyId(i).isVisitedForGCS()) {
+					ancestors.add(i);
+					getNodebyId(i).visitForGCS();
+				}
+			}
 		}
 		Set<Integer> others = new HashSet<Integer>();
 		for (int i : ancestors) {
@@ -129,7 +135,13 @@ public class Ctree {
 		Set<Integer> descandants = new HashSet<Integer>();
 		AbstractTreeNode node = getNodebyId(nodeid);
 		if (node.getChildrenIds() != null) {
-			descandants.addAll(node.getChildrenIds());
+			List<Integer> children = node.getChildrenIds();
+			for(int i: children) {
+				if (!getNodebyId(i).isVisitedForGCS()) {
+					descandants.add(i);
+					getNodebyId(i).visitForGCS();
+				}
+			}
 		}
 		Set<Integer> others = new HashSet<Integer>();
 		for (int i : descandants) {

@@ -8,8 +8,17 @@ import util.IUtils;
 public abstract class AbstractTreeNode {
 	static int uniq = 0;
 	int id;
-	List<Integer> childrenids;
-	List<Integer> parentids;
+	List<Integer> childrenids; // post-nodes
+	List<Integer> parentids;   //pre-nodes
+	boolean visitedForGCS = false;
+	
+	public void visitForGCS() {
+		visitedForGCS = true;
+	}
+	
+	public boolean isVisitedForGCS() {
+		return visitedForGCS;
+	}
 
 	public AbstractTreeNode() {
 		id = uniq++;
