@@ -47,10 +47,12 @@ public class MarkingGenerationTest {
 		resultSet.put("multiinOutT1.xml", 5);
 		resultSet.put("multiinOutT2.xml", 6);
 		resultSet.put("uand1.xml", 6);
-		//resultSet.put("uand2.xml", 10);
 		resultSet.put("uand3.xml", 8);
 		resultSet.put("uand4.xml", 7);
 		resultSet.put("uand5.xml", 6);
+		resultSet.put("uand2_4.xml", 33);
+		resultSet.put("uand2_3_1.xml", 21);
+		resultSet.put("uand2_1.xml", 12);
 	}
 
 	void test_marking_enumeration() {
