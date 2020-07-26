@@ -110,6 +110,20 @@ public class Ctree {
 		// delete the nodes which dont have any place in post-nodes
 		//this is for memory efficiency
 	}
+	
+	private Set<Integer> getSiblings(Integer nodeid) {
+		Set<Integer> siblings = new HashSet<Integer>();
+		AbstractTreeNode node = getNodebyId(nodeid);
+		if (node.getParentIds() != null) {
+			List<Integer> parents = node.getParentIds();
+			for (int i : parents) {
+				siblings.addAll(getNodebyId(i).getChildrenIds());
+			}
+		}
+		
+		siblings.remove(nodeid);
+		return siblings;
+	}
 
 	private Set<Integer> getAncestors(Integer nodeid) {
 		Set<Integer> ancestors = new HashSet<Integer>();
@@ -166,8 +180,10 @@ public class Ctree {
 				others.addAll(d);
 			}
 		}
+		Set<Integer> mysiblings = getSiblings(node.getId());
 		ancestors.addAll(descendants);
 		ancestors.addAll(others);
+		ancestors.removeAll(mysiblings);
 		for (int i : ancestors) {
 			AbstractTreeNode n = getNodebyId(i);
 			n.removeAllPlaces();
