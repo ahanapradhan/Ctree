@@ -117,7 +117,8 @@ public interface NetFolder {
 	}
 	
 	public static void fold(Net net) {
-		foldOneInOneOutTransitions(net);
+		//
 		foldOneInMultiOutTransitions(net);
+		foldOneInOneOutTransitions(net);
 	}
 }
