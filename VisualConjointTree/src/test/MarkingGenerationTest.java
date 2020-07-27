@@ -26,7 +26,7 @@ public class MarkingGenerationTest {
 		resultSet.put("andnet3.xml", 16);
 		resultSet.put("andnet2.xml", 14);
 		resultSet.put("andnet1.xml", 6);
-		resultSet.put("seq1.xml", 6);
+		resultSet.put("seq1.xml", 5);
 		resultSet.put("andxor1.xml", 10);
 		resultSet.put("andxor2.xml", 10);
 		resultSet.put("andnet45.xml", 51);
@@ -51,10 +51,11 @@ public class MarkingGenerationTest {
 		resultSet.put("uand4.xml", 7);
 		resultSet.put("uand5.xml", 6);
 		resultSet.put("uand2_4.xml", 33);
-		resultSet.put("uand2_3_1.xml", 21);
+		//resultSet.put("uand2_3_1.xml", 21);
 		resultSet.put("uand2_1.xml", 12);
 	}
 
+	@Test
 	void test_marking_enumeration() {
 		prepareResultSet();
 		for (Map.Entry<String, Integer> entry : resultSet.entrySet()) {
@@ -63,9 +64,15 @@ public class MarkingGenerationTest {
 
 			Net m = PNMLParser.readPIPExmlFile(TestUtils.INPUT_NETS_DIR + netname);
 			Net m1 = new Net(m);
+			//TestUtils.drawNetAndShow(m1);
 			Ctree tree = FoldedNetToCtreeBuilder.buildCtree(m1);
 			Set<String> markings = GCSUtils.generateMarkings(tree);
+			System.out.println(netname);
+			/*for(String p : markings) {
+				System.out.println(p);
+			}*/
 			assertEquals(markings.size(), markingCount);
+
 		}
 	}
 
@@ -90,6 +97,7 @@ public class MarkingGenerationTest {
 	void test_marking_genUand4() {
 		Net m = PNMLParser.readPIPExmlFile(TestUtils.INPUT_NETS_DIR + "uand4.xml");
 		Net m1 = new Net(m);
+		TestUtils.drawNetAndShow(m1);
 		Ctree tree = FoldedNetToCtreeBuilder.buildCtree(m1);
 		Set<String> markings = GCSUtils.generateMarkings(tree);
 		assertTrue(markings.contains("p4,p8"));

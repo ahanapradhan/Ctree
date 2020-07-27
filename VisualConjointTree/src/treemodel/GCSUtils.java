@@ -4,43 +4,57 @@ import java.util.HashSet;
 import java.util.Set;
 
 public interface GCSUtils {
-	
-	public static Set<String> generateMarkings(Ctree tree){
-		Set<Set<String>> ms = generateMarkingSet(tree);
+
+	public static Set<String> generateMarkings(Ctree tree) {
+		Set<Set<String>> ms = generateMarkingSet2(tree);
 		Set<String> markings = new HashSet<String>();
 		for (Set<String> m : ms) {
 			StringBuilder sb = new StringBuilder();
 			String prefix = "";
-			for(String s : m) {
+			for (String s : m) {
 				sb.append(prefix);
 				sb.append(s);
 				prefix = ",";
 			}
-			markings.add(sb.toString());
+			if (!sb.toString().isBlank()) {
+				markings.add(sb.toString());
+			}
 		}
 		return markings;
 	}
 
-	private static Set<Set<String>> generateMarkingSet(Ctree tree) { // testing pending
+	private static Set<Set<String>> generateMarkingSet2(Ctree tree) {
 		Set<Set<String>> mss = null;
 		Set<Set<String>> finalSet = new HashSet<Set<String>>();
-		Set<String> ps = tree.getAllPlaces();
+		Set<AbstractTreeNode> ps = tree.getNodes();
 		if (ps == null || ps.isEmpty()) {
 			return null;
 		}
-		for (String p : ps) {
-			mss = generateMarkingSet(getGCS(tree, p));
-			if (mss != null) {
-				for (Set<String> s : mss) {
-					s.add(p);
+
+		for (AbstractTreeNode cn : ps) {
+			if (cn instanceof CNode) {
+				CNode cnd = (CNode) cn;
+				Set<String> places = cnd.getPlaces();
+				if (places != null && !places.isEmpty()) {
+					String onep = places.iterator().next();
+					mss = generateMarkingSet2(getGCS(tree, onep));
+					if (mss == null || mss.isEmpty()) {
+						for (String p : places) {
+							Set<String> m = new HashSet<String>();
+							m.add(p);
+							finalSet.add(m);
+						}
+					} else {
+						for (String p : places) {
+							for (Set<String> ms : mss) {
+								Set<String> m = new HashSet<String>(ms);
+								m.add(p);
+								finalSet.add(m);
+							}
+						}
+					}
 				}
-			} else {
-				mss = new HashSet<Set<String>>();
-				Set<String> ms = new HashSet<String>();
-				ms.add(p);
-				mss.add(ms);
 			}
-			finalSet.addAll(mss);
 		}
 		return finalSet;
 	}
