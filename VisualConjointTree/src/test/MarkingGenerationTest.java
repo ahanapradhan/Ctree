@@ -59,6 +59,7 @@ public class MarkingGenerationTest {
 		resultSet.put("diamondnet4.xml", 5);
 		resultSet.put("diamondnet5.xml", 11);
 		resultSet.put("diamondnet.xml", 10);
+		resultSet.put("houseConstruction10.xml", 66);
 	}
 
 	@Test
